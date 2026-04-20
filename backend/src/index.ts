@@ -17,7 +17,19 @@ const app = express();
 // ── Middleware ──────────────────────────────────────────────
 // Порядок важен: id → log → cors → rate → body → auth → routes → errors
 app.use(pinoHttp({ logger }));
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'script-src': ["'self'", "'unsafe-inline'"],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net'],
+        'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com'],
+      },
+    },
+  })
+);
 app.use(cors({ origin: config.cors.origin, credentials: true }));
 app.use(express.json());
 

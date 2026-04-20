@@ -10,7 +10,6 @@ import {
   PanelSpinner,
   Placeholder,
   Button,
-  Banner,
   NavIdProps,
   Div,
   Text,
@@ -18,7 +17,6 @@ import {
   Avatar,
 } from '@vkontakte/vkui';
 import { 
-  Icon28Profile, 
   Icon28CalendarOutline, 
   Icon28PlaceOutline,
   Icon56ErrorOutline

@@ -19,7 +19,7 @@ import {
   Icon24CheckCircleOutline, 
   Icon24CancelOutline 
 } from '@vkontakte/icons';
-import bridgeModule from '@vkontakte/vk-bridge';
+import bridgeModule, { parseURLSearchParamsForGetLaunchParams } from '@vkontakte/vk-bridge';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import { getAllAds, moderateAd, saveGroupToken } from '../shared/api';
 import { DEFAULT_VIEW_PANELS } from '../routes';
@@ -36,12 +36,14 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
 
   const handleConnectGroup = async () => {
     try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const groupId = Number(urlParams.get('vk_group_id'));
-      const appId = 54490430;
+      const launchParams = parseURLSearchParamsForGetLaunchParams(window.location.search);
+      const appId = launchParams.vk_app_id;
+      const groupId = launchParams.vk_group_id;
 
-      if (!groupId) {
-        console.error('Приложение запущено не в сообществе');
+      console.log('Attempting to connect community...', { appId, groupId });
+
+      if (!groupId || !appId) {
+        console.error('Приложение запущено не в сообществе или отсутствуют параметры запуска');
         return;
       }
 
@@ -53,7 +55,7 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
       }) as any;
 
       if (data && data.access_token) {
-        await saveGroupToken(groupId, data.access_token);
+        await saveGroupToken(Number(groupId), data.access_token);
         setIsGroupLinked(true);
         console.log('Group successfully linked!');
       }

@@ -63,7 +63,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
 
       <Group header={
         <Header 
-          aside={
+          after={
             <Button 
               size="s" 
               mode="tertiary" 
@@ -89,10 +89,10 @@ export const Home: FC<HomeProps> = ({ id }) => {
                   ad.type === 'LOST' ? 'Пропал питомец' : 
                   ad.type === 'FOUND' ? 'Найден питомец' : 'Пристройство'
                 }
-                header={ad.title}
-                text={ad.description}
+                title={ad.title}
+                description={ad.description}
                 maxHeight={250}
-                image={ad.photoUrl || undefined}
+                src={ad.photoUrl || undefined}
               />
             ))}
           </CardGrid>

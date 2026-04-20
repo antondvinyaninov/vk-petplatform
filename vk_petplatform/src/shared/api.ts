@@ -72,3 +72,49 @@ export const createAd = async (text: string) => {
     throw error;
   }
 };
+
+/**
+ * Получает список всех активных объявлений
+ */
+export const getAllAds = async () => {
+  try {
+    const search = window.location.search;
+    const response = await fetch(`${API_URL}/ads`, {
+      headers: {
+        'x-vk-sign': search.slice(1),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ads: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to fetch global ads:', error);
+    return [];
+  }
+};
+
+/**
+ * Получает детали объявления по ID
+ */
+export const getAdById = async (id: string | number) => {
+  try {
+    const search = window.location.search;
+    const response = await fetch(`${API_URL}/ads/${id}`, {
+      headers: {
+        'x-vk-sign': search.slice(1),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ad detail: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch ad ${id}:`, error);
+    return null;
+  }
+};

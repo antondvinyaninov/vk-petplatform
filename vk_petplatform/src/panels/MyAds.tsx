@@ -72,7 +72,7 @@ export const MyAds: FC<NavIdProps> = ({ id }) => {
             {ads.map((ad) => (
               <ContentCard
                 key={ad.id}
-                onClick={() => {}} // В будущем переход на детальную страницу
+                onClick={() => routeNavigator.push(`/${DEFAULT_VIEW_PANELS.AD_DETAIL}/${ad.id}`)}
                 subtitle={
                   ad.type === 'LOST' ? 'Пропал питомец' : 
                   ad.type === 'FOUND' ? 'Найден питомец' : 'Пристройство'

@@ -81,7 +81,6 @@ model User {
   @@index([last_seen], map: "idx_users_last_seen")
   @@index([name], map: "idx_users_name")
   @@index([vk_id], map: "idx_users_vk_id")
-  @@index([vkGroupId], map: "idx_pets_vk_group_id")
   @@map("users")
 }
 
@@ -159,6 +158,7 @@ model Pet {
 
   @@index([curator_id], map: "idx_pets_curator_id")
   @@index([location_cage], map: "idx_pets_location_cage")
+  @@index([vkGroupId], map: "idx_pets_vk_group_id")
   @@index([location_type], map: "idx_pets_location_type")
   @@index([name], map: "idx_pets_name")
   @@index([org_id], map: "idx_pets_org_id")

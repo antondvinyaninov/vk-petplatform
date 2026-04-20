@@ -30,19 +30,6 @@ export const Home: FC<HomeProps> = ({ id, fetchedUser, isAdmin }) => {
           <Cell before={photo_200 && <Avatar src={photo_200} />} subtitle={city?.title}>
             {`${first_name} ${last_name}`}
           </Cell>
-        </Group>
-      )}
-
-      {isAdmin && (
-        <Group header={<Header size="s">Управление приютом</Header>}>
-          <Box padding="m">
-            <Button stretched size="l" mode="primary" onClick={() => console.log('Settings click')}>
-              Настройки сообщества (Step 5)
-            </Button>
-          </Box>
-        </Group>
-      )}
-
       <Group header={<Header size="s">Navigation Example</Header>}>
         <Box padding="m">
           <Button stretched size="l" mode="secondary" onClick={() => routeNavigator.push('persik')}>

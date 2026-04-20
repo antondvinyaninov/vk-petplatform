@@ -17,7 +17,7 @@ export const App = () => {
   const routeNavigator = useRouteNavigator();
   const [fetchedUser, setUser] = useState<UserInfo | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [popout, setPopout] = useState<ReactNode | null>(<ScreenSpinner />);
+  const [popout, setPopout] = useState<ReactNode | null>(null);
 
   useEffect(() => {
     // Проверка контекста запуска: вне сообщества редиректим на лендинг

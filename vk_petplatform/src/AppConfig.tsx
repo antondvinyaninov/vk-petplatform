@@ -15,7 +15,17 @@ import { App } from './App';
 export const AppConfig = () => {
   const vkBridgeAppearance = useAppearance() || undefined;
   const vkBridgeInsets = useInsets() || undefined;
-  const adaptivity = transformVKBridgeAdaptivity(useAdaptivity());
+  const bridgeAdaptivity = useAdaptivity();
+  
+  // Вычисляем адаптивность: приоритет у данных из Bridge, но на старте используем window
+  const adaptivity = bridgeAdaptivity.type 
+    ? transformVKBridgeAdaptivity(bridgeAdaptivity)
+    : {
+        viewWidth: getViewWidthByViewportWidth(window.innerWidth),
+        viewHeight: getViewHeightByViewportHeight(window.innerHeight),
+        sizeX: window.innerWidth >= 768 ? SizeType.REGULAR : SizeType.COMPACT,
+        sizeY: SizeType.REGULAR,
+      };
   const { vk_platform } = parseURLSearchParamsForGetLaunchParams(window.location.search);
   const platform = (vk_platform as string) === 'desktop_web' 
     ? 'vkcom' 

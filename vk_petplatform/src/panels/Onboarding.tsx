@@ -30,11 +30,11 @@ export const Onboarding: FC<NavIdProps> = ({ id }) => {
             </Button>
           }
         >
-          <Placeholder.Header>PetPlatform — твой помощник в волонтерстве</Placeholder.Header>
-          <Placeholder.Text>
+          <Placeholder.Title>PetPlatform — твой помощник в волонтерстве</Placeholder.Title>
+          <Placeholder.Description>
             Управляйте базой животных, находите дом питомцам и делайте добрые дела вместе с нами прямо внутри ВКонтакте. 
             Наш плагин специально разработан для волонтерских групп и приютов.
-          </Placeholder.Text>
+          </Placeholder.Description>
         </Placeholder>
         <Box padding="m" style={{ color: 'var(--vkui--color_text_secondary)', textAlign: 'center' }}>
           После установки вы сможете вести каталог животных, публиковать объявления и управлять SOS-радаром своего сообщества.

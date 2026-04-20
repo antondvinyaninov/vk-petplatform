@@ -9,6 +9,9 @@ const vkBridge = (vkBridgeModule && 'send' in vkBridgeModule)
 
 vkBridge.send('VKWebAppInit');
 
+// Всегда импортируем Eruda для отладки в мобильном VK
+import('./eruda.ts');
+
 createRoot(document.getElementById('root')!).render(<AppConfig />);
 
 if (import.meta.env.MODE === 'development') {

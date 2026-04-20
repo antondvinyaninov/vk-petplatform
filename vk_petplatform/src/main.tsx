@@ -7,8 +7,7 @@ const vkBridge = (vkBridgeModule && 'send' in vkBridgeModule)
   ? vkBridgeModule 
   : (vkBridgeModule as any).default;
 
-vkBridge.send('VKWebAppInit');
-
+// VK Bridge уже инициализирован в index.html для ускорения загрузки
 createRoot(document.getElementById('root')!).render(<AppConfig />);
 
 if (import.meta.env.MODE === 'development') {

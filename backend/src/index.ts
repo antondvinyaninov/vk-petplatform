@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 import { pinoHttp } from 'pino-http';
 import { config } from './shared/config';
 import { logger } from './shared/logger';
@@ -15,7 +16,8 @@ import { prisma } from './shared/db';
 const app = express();
 
 // ── Middleware ──────────────────────────────────────────────
-// Порядок важен: id → log → cors → rate → body → auth → routes → errors
+// Порядок важен: compression → id → log → cors → rate → body → auth → routes → errors
+app.use(compression());
 app.use(pinoHttp({ logger }));
 app.use(
   helmet({

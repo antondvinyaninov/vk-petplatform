@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode, lazy, Suspense } from 'react';
 import bridgeModule, { UserInfo } from '@vkontakte/vk-bridge';
 import { View, SplitLayout, SplitCol, ScreenSpinner } from '@vkontakte/vkui';
 
@@ -7,8 +7,10 @@ const bridge = (bridgeModule && 'send' in bridgeModule)
   : (bridgeModule as any).default;
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
 
-import { Persik, Home } from './panels';
 import { DEFAULT_VIEW_PANELS } from './routes';
+
+const Home = lazy(() => import('./panels/Home').then(m => ({ default: m.Home })));
+const Persik = lazy(() => import('./panels/Persik').then(m => ({ default: m.Persik })));
 
 export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
@@ -29,8 +31,12 @@ export const App = () => {
       <SplitLayout>
         <SplitCol>
           <View activePanel={activePanel}>
-            <Home id="home" fetchedUser={fetchedUser} />
-            <Persik id="persik" />
+            <Suspense fallback={<ScreenSpinner />}>
+              <Home id="home" fetchedUser={fetchedUser} />
+            </Suspense>
+            <Suspense fallback={<ScreenSpinner />}>
+              <Persik id="persik" />
+            </Suspense>
           </View>
         </SplitCol>
       </SplitLayout>

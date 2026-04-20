@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
-import basicSsl from '@vitejs/plugin-basic-ssl';
 
 function handleModuleDirectivesPlugin() {
   return {
@@ -27,10 +26,9 @@ export default defineConfig({
 
   plugins: [
     react(),
-    basicSsl(),
     handleModuleDirectivesPlugin(),
     legacy({
-      targets: ['defaults', 'not IE 11'],
+      targets: ['defaults', 'not IE 11', 'ios >= 12'],
     }),
   ],
 
@@ -45,5 +43,15 @@ export default defineConfig({
 
   build: {
     outDir: 'build',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vkui: ['@vkontakte/vkui'],
+          icons: ['@vkontakte/icons'],
+          vendor: ['react', 'react-dom', '@vkontakte/vk-bridge', '@vkontakte/vk-mini-apps-router'],
+        },
+      },
+    },
   },
 });

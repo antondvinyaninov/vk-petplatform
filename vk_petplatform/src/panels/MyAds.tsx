@@ -8,6 +8,8 @@ import {
   Group,
   PanelSpinner,
   NavIdProps,
+  CardGrid,
+  ContentCard,
 } from '@vkontakte/vkui';
 import { Icon56ArticleOutline } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
@@ -66,10 +68,23 @@ export const MyAds: FC<NavIdProps> = ({ id }) => {
         </Placeholder>
       ) : (
         <Group>
-          {/* Здесь будет список объявлений, когда они появятся */}
-          <div style={{ padding: 20, textAlign: 'center', color: 'var(--vkui--color_text_secondary)' }}>
-             У вас {ads.length} объявлений (список в разработке)
-          </div>
+          <CardGrid size="l">
+            {ads.map((ad) => (
+              <ContentCard
+                key={ad.id}
+                onClick={() => {}} // В будущем переход на детальную страницу
+                subtitle={
+                  ad.type === 'LOST' ? 'Пропал питомец' : 
+                  ad.type === 'FOUND' ? 'Найден питомец' : 'Пристройство'
+                }
+                header={ad.title}
+                text={ad.description}
+                caption={new Date(ad.createdAt).toLocaleDateString('ru-RU')}
+                maxHeight={250}
+                image={ad.photoUrl || undefined}
+              />
+            ))}
+          </CardGrid>
         </Group>
       )}
     </Panel>

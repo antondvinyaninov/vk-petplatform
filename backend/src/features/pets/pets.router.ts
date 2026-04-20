@@ -73,8 +73,8 @@ petsRouter.post('/', vkAuth, async (req, res, next) => {
       data: { 
         ...parsed.data, 
         userId: user.id,
-        vkGroupId: req.vkUser.vk_group_id, // Привязываем к группе, если она есть
-      },
+        vkGroupId: req.vkUser.vk_group_id,
+      } as any,
     });
 
     res.status(201).json({

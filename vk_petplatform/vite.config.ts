@@ -46,10 +46,16 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vkui: ['@vkontakte/vkui'],
-          icons: ['@vkontakte/icons'],
-          vendor: ['react', 'react-dom', '@vkontakte/vk-bridge', '@vkontakte/vk-mini-apps-router'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@vkontakte/vkui')) {
+              return 'vkui';
+            }
+            if (id.includes('@vkontakte/icons')) {
+              return 'icons';
+            }
+            return 'vendor';
+          }
         },
       },
     },

@@ -16,6 +16,7 @@ export const DEFAULT_VIEW_PANELS = {
   ONBOARDING: 'onboarding',
   PROFILE: 'profile',
   MY_ADS: 'my_ads',
+  CREATE_AD: 'create_ad',
 } as const;
 
 export const routes = RoutesConfig.create([
@@ -26,6 +27,7 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.ONBOARDING, `/${DEFAULT_VIEW_PANELS.ONBOARDING}`, []),
       createPanel(DEFAULT_VIEW_PANELS.PROFILE, `/${DEFAULT_VIEW_PANELS.PROFILE}`, []),
       createPanel(DEFAULT_VIEW_PANELS.MY_ADS, `/${DEFAULT_VIEW_PANELS.MY_ADS}`, []),
+      createPanel(DEFAULT_VIEW_PANELS.CREATE_AD, `/${DEFAULT_VIEW_PANELS.CREATE_AD}`, []),
     ]),
   ]),
 ]);

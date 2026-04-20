@@ -11,6 +11,7 @@ import {
 } from '@vkontakte/vkui';
 import { Icon56ArticleOutline } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
+import { DEFAULT_VIEW_PANELS } from '../routes';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -55,7 +56,7 @@ export const MyAds: FC<NavIdProps> = ({ id }) => {
           icon={<Icon56ArticleOutline />}
           title="У вас пока нет объявлений"
           action={
-            <Button size="m" onClick={() => console.log('Create Ad Clicked')}>
+            <Button size="m" onClick={() => routeNavigator.push(`/${DEFAULT_VIEW_PANELS.CREATE_AD}`)}>
               Добавить объявление
             </Button>
           }

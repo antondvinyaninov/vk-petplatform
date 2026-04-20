@@ -52,7 +52,7 @@ export const App = () => {
           <Suspense fallback={popout || <ScreenSpinner />}>
             <View activePanel={activePanel}>
               <Onboarding id="onboarding" />
-              <Home id="home" fetchedUser={fetchedUser} isAdmin={isAdmin} />
+              <Home id="home" fetchedUser={fetchedUser} />
               <Persik id="persik" />
             </View>
           </Suspense>

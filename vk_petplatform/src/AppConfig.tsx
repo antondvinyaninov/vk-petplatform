@@ -1,6 +1,13 @@
 import vkBridgeModule, { parseURLSearchParamsForGetLaunchParams } from '@vkontakte/vk-bridge';
 import { useAdaptivity, useAppearance, useInsets } from '@vkontakte/vk-bridge-react';
-import { AdaptivityProvider, ConfigProvider, AppRoot } from '@vkontakte/vkui';
+import { 
+  AdaptivityProvider, 
+  ConfigProvider, 
+  AppRoot,
+  getViewWidthByViewportWidth,
+  getViewHeightByViewportHeight,
+  SizeType
+} from '@vkontakte/vkui';
 import { RouterProvider } from '@vkontakte/vk-mini-apps-router';
 import '@vkontakte/vkui/dist/cssm/styles/themes.css';
 

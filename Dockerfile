@@ -1,7 +1,7 @@
 # Этап 1: Сборка фронтенда
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app/frontend
-COPY vk_petplatform/package*.json ./
+COPY vk_petplatform/package*.json vk_petplatform/.npmrc ./
 RUN npm install --legacy-peer-deps
 COPY vk_petplatform/ ./
 RUN npm run build
@@ -9,7 +9,7 @@ RUN npm run build
 # Этап 2: Сборка бэкенда
 FROM node:20-alpine AS backend-builder
 WORKDIR /app/backend
-COPY backend/package*.json ./
+COPY backend/package*.json backend/.npmrc ./
 RUN npm install --legacy-peer-deps
 COPY backend/ ./
 # Генерация Prisma Client

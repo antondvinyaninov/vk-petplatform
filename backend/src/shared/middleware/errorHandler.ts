@@ -22,6 +22,8 @@ export function errorHandler(
   res.status(500).json({
     code: 'INTERNAL_ERROR',
     status: 500,
-    message: 'Internal server error',
+    message: err.message || 'Internal server error',
+    // Временно добавляем стек для отладки на Easypanel
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 }

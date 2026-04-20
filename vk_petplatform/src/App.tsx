@@ -11,17 +11,24 @@ import { useActiveVkuiLocation, useRouteNavigator } from '@vkontakte/vk-mini-app
 const Home = lazy(() => import('./panels/Home').then(m => ({ default: m.Home })));
 const Persik = lazy(() => import('./panels/Persik').then(m => ({ default: m.Persik })));
 const Onboarding = lazy(() => import('./panels/Onboarding').then(m => ({ default: m.Onboarding })));
+const Profile = lazy(() => import('./panels/Profile').then(m => ({ default: m.Profile })));
 
 export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
   const routeNavigator = useRouteNavigator();
   const [fetchedUser, setUser] = useState<UserInfo | undefined>();
+  const [role, setRole] = useState<string | null>(null);
   const [popout, setPopout] = useState<ReactNode | null>(null);
 
   useEffect(() => {
     // Проверка контекста запуска: вне сообщества редиректим на лендинг
     const params = new URLSearchParams(window.location.search);
     const hasGroupId = params.has('vk_group_id');
+    const vkRole = params.get('vk_viewer_group_role');
+    
+    if (vkRole) {
+      setRole(vkRole);
+    }
     
     if (!hasGroupId && activePanel !== DEFAULT_VIEW_PANELS.ONBOARDING) {
       routeNavigator.replace('/onboarding');
@@ -49,6 +56,7 @@ export const App = () => {
               <Onboarding id="onboarding" />
               <Home id="home" fetchedUser={fetchedUser} />
               <Persik id="persik" />
+              <Profile id="profile" fetchedUser={fetchedUser} role={role} />
             </View>
           </Suspense>
         </SplitCol>

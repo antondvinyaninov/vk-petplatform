@@ -14,6 +14,7 @@ export const DEFAULT_VIEW_PANELS = {
   HOME: 'home',
   PERSIK: 'persik',
   ONBOARDING: 'onboarding',
+  PROFILE: 'profile',
 } as const;
 
 export const routes = RoutesConfig.create([
@@ -22,6 +23,7 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.HOME, '/', []),
       createPanel(DEFAULT_VIEW_PANELS.PERSIK, `/${DEFAULT_VIEW_PANELS.PERSIK}`, []),
       createPanel(DEFAULT_VIEW_PANELS.ONBOARDING, `/${DEFAULT_VIEW_PANELS.ONBOARDING}`, []),
+      createPanel(DEFAULT_VIEW_PANELS.PROFILE, `/${DEFAULT_VIEW_PANELS.PROFILE}`, []),
     ]),
   ]),
 ]);

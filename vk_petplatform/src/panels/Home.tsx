@@ -6,11 +6,13 @@ import {
   Header,
   Group,
   Cell,
+  SimpleCell,
   Avatar,
   Button,
   Box,
   NavIdProps,
 } from '@vkontakte/vkui';
+import { Icon28UserOutline } from '@vkontakte/icons';
 import { UserInfo } from '@vkontakte/vk-bridge';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
@@ -31,6 +33,14 @@ export const Home: FC<HomeProps> = ({ id, fetchedUser }) => {
         <Cell before={photo_200 && <Avatar src={photo_200} />} subtitle={city?.title}>
           {`${first_name} ${last_name}`}
         </Cell>
+      </Group>
+      <Group>
+        <SimpleCell
+          before={<Icon28UserOutline />}
+          onClick={() => routeNavigator.push('profile')}
+        >
+          Мой профиль
+        </SimpleCell>
       </Group>
       <Group header={<Header size="s">Navigation Example</Header>}>
         <Box padding="m">

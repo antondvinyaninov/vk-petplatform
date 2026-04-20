@@ -18,6 +18,7 @@ export const DEFAULT_VIEW_PANELS = {
   MY_ADS: 'my_ads',
   CREATE_AD: 'create_ad',
   AD_DETAIL: 'ad_detail',
+  MODERATION: 'moderation',
 } as const;
 
 export const routes = RoutesConfig.create([
@@ -30,6 +31,7 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.MY_ADS, `/${DEFAULT_VIEW_PANELS.MY_ADS}`, []),
       createPanel(DEFAULT_VIEW_PANELS.CREATE_AD, `/${DEFAULT_VIEW_PANELS.CREATE_AD}`, []),
       createPanel(DEFAULT_VIEW_PANELS.AD_DETAIL, `/${DEFAULT_VIEW_PANELS.AD_DETAIL}/:id`, []),
+      createPanel(DEFAULT_VIEW_PANELS.MODERATION, `/${DEFAULT_VIEW_PANELS.MODERATION}`, []),
     ]),
   ]),
 ]);

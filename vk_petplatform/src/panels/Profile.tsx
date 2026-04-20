@@ -18,6 +18,7 @@ import {
   Icon28ListOutline,
   Icon28FavoriteOutline,
   Icon28HelpOutline,
+  Icon28CheckShieldOutline,
 } from '@vkontakte/icons';
 import { UserInfo } from '@vkontakte/vk-bridge';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
@@ -66,6 +67,12 @@ export const Profile: FC<ProfileProps> = ({ id, fetchedUser, role }) => {
             </SimpleCell>
             <SimpleCell before={<Icon28StatisticsOutline />} onClick={() => console.log('Admin Stats')}>
               Статистика приюта
+            </SimpleCell>
+            <SimpleCell 
+              before={<Icon28CheckShieldOutline />} 
+              onClick={() => routeNavigator.push(`/${DEFAULT_VIEW_PANELS.MODERATION}`)}
+            >
+              Модерация объявлений
             </SimpleCell>
           </List>
         </Group>

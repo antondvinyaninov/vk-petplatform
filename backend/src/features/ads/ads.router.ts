@@ -39,7 +39,7 @@ adsRouter.get('/', vkAuth, async (req, res, next) => {
     // Сериализация BigInt
     const serializedAds = ads.map(ad => ({
       ...ad,
-      vkGroupId: ad.vkGroupId?.toString(),
+      vkGroupId: (ad as any).vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
         vkGroupId: (ad.pets as any).vkGroupId?.toString(),
@@ -94,7 +94,7 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
 
     res.status(201).json({
       ...adWithPet,
-      vkGroupId: adWithPet?.vkGroupId?.toString(),
+      vkGroupId: (adWithPet as any)?.vkGroupId?.toString(),
       pets: adWithPet?.pets ? {
         ...adWithPet.pets,
         vkGroupId: (adWithPet.pets as any).vkGroupId?.toString(),
@@ -109,7 +109,7 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
 adsRouter.get('/my', vkAuth, async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { vk_id: req.vkUser.vk_user_id },
+      where: { vk_id: req.vkUser.vk_user_id as any },
     });
 
     if (!user) {
@@ -124,7 +124,7 @@ adsRouter.get('/my', vkAuth, async (req, res, next) => {
 
     const serializedAds = ads.map(ad => ({
       ...ad,
-      vkGroupId: ad.vkGroupId?.toString(),
+      vkGroupId: (ad as any).vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
         vkGroupId: (ad.pets as any).vkGroupId?.toString(),
@@ -150,7 +150,7 @@ adsRouter.get('/:id', vkAuth, async (req, res, next) => {
     // Сериализация BigInt
     res.json({
       ...ad,
-      vkGroupId: ad.vkGroupId?.toString(),
+      vkGroupId: (ad as any).vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
         vkGroupId: (ad.pets as any).vkGroupId?.toString(),

@@ -33,9 +33,19 @@ app.use(
 app.use(cors({ origin: config.cors.origin, credentials: true }));
 app.use(express.json());
 
-// Раздача статики фронтенда
+// Раздача статики фронтенда с отключенным кешированием для отладки
 const publicPath = path.join(__dirname, '../public');
-app.use(express.static(publicPath));
+app.use(express.static(publicPath, {
+  etag: false,
+  lastModified: false,
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 // ── Health ──────────────────────────────────────────────────
 app.get('/health', (_req, res) => {

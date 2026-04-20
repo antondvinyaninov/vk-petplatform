@@ -14,7 +14,7 @@ import {
 import {
   Icon28SettingsOutline,
   Icon28UsersOutline,
-  Icon28StatsOutline,
+  Icon28StatisticsOutline,
   Icon28ListOutline,
   Icon28FavoriteOutline,
   Icon28HelpOutline,
@@ -55,7 +55,7 @@ export const Profile: FC<ProfileProps> = ({ id, fetchedUser, role }) => {
       </Group>
 
       {isAdmin && (
-        <Group header={<Header mode="secondary">Меню администратора</Header>}>
+        <Group header={<Header>Меню администратора</Header>}>
           <List>
             <SimpleCell before={<Icon28SettingsOutline />} onClick={() => console.log('Admin Settings')}>
               Настройки сообщества
@@ -70,7 +70,7 @@ export const Profile: FC<ProfileProps> = ({ id, fetchedUser, role }) => {
         </Group>
       )}
 
-      <Group header={<Header mode="secondary">Меню пользователя</Header>}>
+      <Group header={<Header>Меню пользователя</Header>}>
         <List>
           <SimpleCell before={<Icon28ListOutline />} onClick={() => console.log('My Ads')}>
             Мои объявления

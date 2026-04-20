@@ -11,7 +11,7 @@ usersRouter.get('/me', vkAuth, async (req, res, next) => {
     const { vk_user_id } = req.vkUser;
     const { firstName, lastName, photo200, cityTitle } = req.query;
 
-    const vkId = Number(vk_user_id);
+    const vkId = vk_user_id;
 
     // Умный Upsert: создаем или обновляем
     const user = await prisma.user.upsert({
@@ -36,9 +36,10 @@ usersRouter.get('/me', vkAuth, async (req, res, next) => {
       },
     });
 
+    // Сериализация BigInt для JSON
     res.json({
       ...user,
-      vkUserId: user.vk_id ? user.vk_id.toString() : '',
+      vk_id: user.vk_id ? user.vk_id.toString() : null,
     });
   } catch (err) {
     next(err);

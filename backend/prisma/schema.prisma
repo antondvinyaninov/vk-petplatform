@@ -28,7 +28,7 @@ model User {
   createdAt                                   DateTime?                             @default(now()) @map("created_at") @db.Timestamp(6)
   last_seen                                   DateTime?                             @db.Timestamp(6)
   password_hash                               String                                @db.VarChar(255)
-  vk_id                                       Int?                                  @unique
+  vk_id                                       BigInt?                               @unique
   vk_access_token                             String?
   ok_id                                       String?                               @unique @db.VarChar(255)
   ok_access_token                             String?

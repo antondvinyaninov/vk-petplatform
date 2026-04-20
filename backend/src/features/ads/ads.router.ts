@@ -39,7 +39,11 @@ adsRouter.get('/', vkAuth, async (req, res, next) => {
     // Сериализация BigInt
     const serializedAds = ads.map(ad => ({
       ...ad,
-      vkGroupId: (ad as any).vkGroupId?.toString(),
+      vkGroupId: ad.vkGroupId?.toString(),
+      pets: ad.pets ? {
+        ...ad.pets,
+        vkGroupId: ad.pets.vkGroupId?.toString(),
+      } : null,
     }));
 
     res.json(serializedAds);
@@ -54,11 +58,11 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
     const parsed = createAdSchema.safeParse(req.body);
     if (!parsed.success) throw new ValidationError(parsed.error.message);
 
-    let user = await prisma.user.findUnique({ where: { vk_id: Number(req.vkUser.vk_user_id) } });
+    let user = await prisma.user.findUnique({ where: { vk_id: req.vkUser.vk_user_id } });
     if (!user) {
       user = await prisma.user.create({
         data: { 
-          vk_id: Number(req.vkUser.vk_user_id), 
+          vk_id: req.vkUser.vk_user_id, 
           name: 'Пользователь VK', 
           lastName: '',
           email: `vk_${req.vkUser.vk_user_id}@vk.mini.app`,
@@ -83,9 +87,18 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
       } as any,
     });
 
+    const adWithPet = await prisma.petplatform_ads.findUnique({
+      where: { id: ad.id },
+      include: { pets: true },
+    });
+
     res.status(201).json({
-      ...ad,
-      vkGroupId: (ad as any).vkGroupId?.toString(),
+      ...adWithPet,
+      vkGroupId: adWithPet?.vkGroupId?.toString(),
+      pets: adWithPet?.pets ? {
+        ...adWithPet.pets,
+        vkGroupId: adWithPet.pets.vkGroupId?.toString(),
+      } : null,
     });
   } catch (err) {
     next(err);
@@ -96,7 +109,7 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
 adsRouter.get('/my', vkAuth, async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { vk_id: Number(req.vkUser.vk_user_id) },
+      where: { vk_id: req.vkUser.vk_user_id },
     });
 
     if (!user) {
@@ -111,7 +124,11 @@ adsRouter.get('/my', vkAuth, async (req, res, next) => {
 
     const serializedAds = ads.map(ad => ({
       ...ad,
-      vkGroupId: (ad as any).vkGroupId?.toString(),
+      vkGroupId: ad.vkGroupId?.toString(),
+      pets: ad.pets ? {
+        ...ad.pets,
+        vkGroupId: ad.pets.vkGroupId?.toString(),
+      } : null,
     }));
 
     res.json(serializedAds);
@@ -129,7 +146,16 @@ adsRouter.get('/:id', vkAuth, async (req, res, next) => {
       include: { pets: true, users: { select: { name: true, lastName: true, avatar: true } } },
     });
     if (!ad) throw new NotFoundError('Ad', id);
-    res.json(ad);
+    
+    // Сериализация BigInt
+    res.json({
+      ...ad,
+      vkGroupId: ad.vkGroupId?.toString(),
+      pets: ad.pets ? {
+        ...ad.pets,
+        vkGroupId: ad.pets.vkGroupId?.toString(),
+      } : null,
+    });
   } catch (err) {
     next(err);
   }

@@ -110,7 +110,7 @@ export const AdDetail: FC<NavIdProps> = ({ id }) => {
         </Div>
       </Group>
 
-      <Group header={<Header mode="secondary">Информация</Header>}>
+      <Group header={<Header>Информация</Header>}>
         <SimpleCell before={<Icon28CalendarOutline />}>
           <InfoRow header="Дата публикации">
             {new Date(ad.createdAt).toLocaleDateString('ru-RU', { 
@@ -130,11 +130,11 @@ export const AdDetail: FC<NavIdProps> = ({ id }) => {
       </Group>
 
       {ad.users && (
-        <Group header={<Header mode="secondary">Автор объявления</Header>}>
+        <Group header={<Header>Автор объявления</Header>}>
           <SimpleCell
             before={<Avatar src={ad.users.avatar} size={48} />}
             subtitle="Написать автору"
-            extra={
+            after={
               <Button 
                 mode="tertiary" 
                 onClick={() => window.open(`https://vk.com/id${ad.users.vk_id}`, '_blank')}
@@ -150,3 +150,5 @@ export const AdDetail: FC<NavIdProps> = ({ id }) => {
     </Panel>
   );
 };
+
+export default AdDetail;

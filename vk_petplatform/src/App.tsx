@@ -15,7 +15,7 @@ const Onboarding = lazy(() => import('./panels/Onboarding').then(m => ({ default
 const Profile = lazy(() => import('./panels/Profile').then(m => ({ default: m.Profile })));
 const MyAds = lazy(() => import('./panels/MyAds').then(m => ({ default: m.MyAds })));
 const CreateAd = lazy(() => import('./panels/CreateAd').then(m => ({ default: m.CreateAd })));
-const AdDetail = lazy(() => import('./panels/AdDetail').then(m => ({ default: m.AdDetail })));
+const AdDetail = lazy(() => import('./panels/AdDetail'));
 
 export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();

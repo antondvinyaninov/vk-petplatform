@@ -63,7 +63,6 @@ export const Home: FC<HomeProps> = ({ id }) => {
 
       <Group header={
         <Header 
-          mode="secondary" 
           aside={
             <Button 
               size="s" 
@@ -86,13 +85,12 @@ export const Home: FC<HomeProps> = ({ id }) => {
               <ContentCard
                 key={ad.id}
                 onClick={() => routeNavigator.push(`/${DEFAULT_VIEW_PANELS.AD_DETAIL}/${ad.id}`)}
-                subtitle={
+                caption={
                   ad.type === 'LOST' ? 'Пропал питомец' : 
                   ad.type === 'FOUND' ? 'Найден питомец' : 'Пристройство'
                 }
                 header={ad.title}
                 text={ad.description}
-                caption={new Date(ad.createdAt).toLocaleDateString('ru-RU')}
                 maxHeight={250}
                 image={ad.photoUrl || undefined}
               />

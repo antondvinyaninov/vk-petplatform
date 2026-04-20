@@ -25,7 +25,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net', 'cdn.jsdelivr.net'],
         'frame-ancestors': ['*'], // ЭКСТРЕМАЛЬНО: Разрешаем встраивание отовсюду для теста
         'style-src': ["'self'", "'unsafe-inline'", 'data:', 'https://fonts.googleapis.com'],
         'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],

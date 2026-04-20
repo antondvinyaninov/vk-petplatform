@@ -2,18 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
-    <title>DEBUG MODE</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+    />
+    <title>PetPlatform</title>
     <script src="/vk-bridge.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init(); console.log('🚀 DEBUG: Eruda Ready');</script>
+    <script>
+      eruda.init();
+      console.log('🚀 HTML Loaded');
+      if (typeof vkBridge !== 'undefined') {
+        vkBridge.send('VKWebAppInit');
+        console.log('VK Bridge early init triggered');
+      }
+    </script>
   </head>
   <body>
-    <div style="padding: 50px; text-align: center; font-family: sans-serif;">
-      <h1>🚀 App Terminal</h1>
-      <p>Если вы видите этот текст, значит соединение установлено!</p>
-      <div id="root"></div>
-    </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

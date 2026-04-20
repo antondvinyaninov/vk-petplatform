@@ -7,6 +7,7 @@ const bridge = (bridgeModule && 'send' in bridgeModule)
   : (bridgeModule as any).default;
 import { DEFAULT_VIEW_PANELS } from './routes';
 import { useActiveVkuiLocation, useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
+import { syncUserWithBackend } from './shared/api';
 
 const Home = lazy(() => import('./panels/Home').then(m => ({ default: m.Home })));
 const Persik = lazy(() => import('./panels/Persik').then(m => ({ default: m.Persik })));
@@ -38,6 +39,9 @@ export const App = () => {
       try {
         const user = await bridge.send('VKWebAppGetUserInfo');
         setUser(user);
+        
+        // Синхронизация с бэкендом
+        await syncUserWithBackend(user);
       } catch (e) {
         console.error('Failed to fetch user', e);
       } finally {

@@ -9,12 +9,6 @@ const vkBridge = (vkBridgeModule && 'send' in vkBridgeModule)
 
 vkBridge.send('VKWebAppInit');
 
-// Проверка версии кода
-alert('PetPlatform: V2 Debug - Check 1');
-
-// Пытаемся загрузить консоль без ожидания
-import('./eruda.ts').catch(err => console.error('Eruda load failed', err));
-
 createRoot(document.getElementById('root')!).render(<AppConfig />);
 
 if (import.meta.env.MODE === 'development') {

@@ -36,13 +36,12 @@ app.use(express.json());
 // Раздача статики фронтенда с отключенным кешированием для отладки
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath, {
-  etag: false,
-  lastModified: false,
   setHeaders: (res, path) => {
     if (path.endsWith('.html')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
+    } else {
+      // Кешируем ассеты на 1 год (стандарт для Vite с хешами в именах)
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     }
   }
 }));

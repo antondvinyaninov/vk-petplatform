@@ -9,7 +9,7 @@ import {
   PanelSpinner,
   NavIdProps,
 } from '@vkontakte/vkui';
-import { Icon56ListOutline } from '@vkontakte/icons';
+import { Icon56ArticleOutline } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
 const API_URL = 'http://localhost:3000/api';
@@ -49,11 +49,11 @@ export const MyAds: FC<NavIdProps> = ({ id }) => {
       </PanelHeader>
 
       {loading ? (
-        <PanelSpinner size="large" />
+        <PanelSpinner size="l" />
       ) : ads.length === 0 ? (
         <Placeholder
-          icon={<Icon56ListOutline />}
-          header="У вас пока нет объявлений"
+          icon={<Icon56ArticleOutline />}
+          title="У вас пока нет объявлений"
           action={
             <Button size="m" onClick={() => console.log('Create Ad Clicked')}>
               Добавить объявление

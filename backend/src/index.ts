@@ -24,7 +24,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com'],
         'style-src': ["'self'", "'unsafe-inline'", 'data:'],
         'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net'],
         'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com'],

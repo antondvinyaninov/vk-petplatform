@@ -63,7 +63,7 @@ export const Profile: FC<ProfileProps> = ({ id, fetchedUser, role }) => {
             <SimpleCell before={<Icon28UsersOutline />} onClick={() => console.log('Admin Members')}>
               Управление участниками
             </SimpleCell>
-            <SimpleCell before={<Icon28StatsOutline />} onClick={() => console.log('Admin Stats')}>
+            <SimpleCell before={<Icon28StatisticsOutline />} onClick={() => console.log('Admin Stats')}>
               Статистика приюта
             </SimpleCell>
           </List>

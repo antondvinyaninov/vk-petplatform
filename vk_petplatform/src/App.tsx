@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode, lazy, Suspense } from 'react';
 import bridgeModule, { UserInfo } from '@vkontakte/vk-bridge';
-import { View, SplitLayout, SplitCol, ScreenSpinner } from '@vkontakte/vkui';
+import { View, SplitLayout, SplitCol, ScreenSpinner, ModalRoot } from '@vkontakte/vkui';
 
 const bridge = (bridgeModule && 'send' in bridgeModule) 
   ? bridgeModule 
@@ -16,10 +16,11 @@ const Profile = lazy(() => import('./panels/Profile').then(m => ({ default: m.Pr
 const MyAds = lazy(() => import('./panels/MyAds').then(m => ({ default: m.MyAds })));
 const CreateAd = lazy(() => import('./panels/CreateAd').then(m => ({ default: m.CreateAd })));
 const AdDetail = lazy(() => import('./panels/AdDetail'));
-const Moderation = lazy(() => import('./panels/Moderation.tsx'));
+const Moderation = lazy(() => import('./panels/Moderation'));
+const ModerationModal = lazy(() => import('./panels/ModerationModal'));
 
 export const App = () => {
-  const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
+  const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME, modal: activeModal } = useActiveVkuiLocation();
   const routeNavigator = useRouteNavigator();
   const [fetchedUser, setUser] = useState<UserInfo | undefined>();
   const [role, setRole] = useState<string | null>(null);
@@ -55,9 +56,22 @@ export const App = () => {
     fetchData();
   }, [activePanel, routeNavigator]);
 
+  const modal = (
+    <ModalRoot activeModal={activeModal} onClose={() => routeNavigator.hideModal()}>
+      <Suspense fallback={<ScreenSpinner />}>
+        <ModerationModal 
+          id="approve_settings" 
+          onConfirm={(adId, type, date) => {
+            console.log(`Action confirmed for ad ${adId}: ${type} at ${date?.toLocaleString() || 'NOW'}`);
+          }} 
+        />
+      </Suspense>
+    </ModalRoot>
+  );
+
   return (
     <>
-      <SplitLayout>
+      <SplitLayout modal={modal}>
         <SplitCol>
           <Suspense fallback={popout || <ScreenSpinner />}>
             <View activePanel={activePanel}>

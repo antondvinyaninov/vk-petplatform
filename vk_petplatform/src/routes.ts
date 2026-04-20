@@ -3,6 +3,7 @@ import {
   createPanel,
   createRoot,
   createView,
+  createModal,
   RoutesConfig,
 } from '@vkontakte/vk-mini-apps-router';
 
@@ -31,7 +32,9 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.MY_ADS, `/${DEFAULT_VIEW_PANELS.MY_ADS}`, []),
       createPanel(DEFAULT_VIEW_PANELS.CREATE_AD, `/${DEFAULT_VIEW_PANELS.CREATE_AD}`, []),
       createPanel(DEFAULT_VIEW_PANELS.AD_DETAIL, `/${DEFAULT_VIEW_PANELS.AD_DETAIL}/:id`, []),
-      createPanel(DEFAULT_VIEW_PANELS.MODERATION, `/${DEFAULT_VIEW_PANELS.MODERATION}`, []),
+      createPanel(DEFAULT_VIEW_PANELS.MODERATION, `/${DEFAULT_VIEW_PANELS.MODERATION}`, [
+        createModal('approve_settings', `/${DEFAULT_VIEW_PANELS.MODERATION}/approve_settings/:id`),
+      ]),
     ]),
   ]),
 ]);

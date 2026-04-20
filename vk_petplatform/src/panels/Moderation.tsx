@@ -12,6 +12,7 @@ import {
   Button,
   NavIdProps,
   ButtonGroup,
+  Div,
 } from '@vkontakte/vkui';
 import { 
   Icon56CheckShieldOutline, 
@@ -20,6 +21,7 @@ import {
 } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import { getAllAds } from '../shared/api';
+import { DEFAULT_VIEW_PANELS } from '../routes';
 
 export const Moderation: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
@@ -40,9 +42,13 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
     fetchAdsForModeration();
   }, []);
 
-  const handleAction = (adId: number, action: 'approve' | 'reject') => {
-    console.log(`Ad ${adId} ${action}ed`);
-    // В будущем здесь будет вызов API для смены статуса
+  const openApproveModal = (adId: number) => {
+    // Открываем модальное окно через push, чтобы передать ID в URL
+    routeNavigator.push(`/${DEFAULT_VIEW_PANELS.MODERATION}/approve_settings/${adId}`);
+  };
+
+  const handleReject = (adId: number) => {
+    console.log(`Ad ${adId} rejected`);
     setAds(prev => prev.filter(a => a.id !== adId));
   };
 
@@ -74,14 +80,14 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
                 title={ad.title}
                 description={
                   <>
-                    {ad.description}
-                    <ButtonGroup mode="horizontal" gap="s" stretched style={{ marginTop: 12 }}>
+                    <Div style={{ padding: 0, marginBottom: 8 }}>{ad.description}</Div>
+                    <ButtonGroup mode="horizontal" gap="s" stretched>
                       <Button 
                         size="s" 
                         mode="primary" 
                         appearance="positive"
                         before={<Icon24CheckCircleOutline width={16} height={16} />}
-                        onClick={() => handleAction(ad.id, 'approve')}
+                        onClick={() => openApproveModal(ad.id)}
                         stretched
                       >
                         Одобрить
@@ -91,7 +97,7 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
                         mode="secondary" 
                         appearance="negative"
                         before={<Icon24CancelOutline width={16} height={16} />}
-                        onClick={() => handleAction(ad.id, 'reject')}
+                        onClick={() => handleReject(ad.id)}
                         stretched
                       >
                         Отклонить
@@ -99,7 +105,7 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
                     </ButtonGroup>
                   </>
                 }
-                maxHeight={250}
+                maxHeight={300}
                 src={ad.photoUrl || undefined}
               />
             ))}

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 function handleModuleDirectivesPlugin() {
   return {
@@ -26,6 +27,7 @@ export default defineConfig({
 
   plugins: [
     react(),
+    basicSsl(),
     handleModuleDirectivesPlugin(),
     legacy({
       targets: ['defaults', 'not IE 11'],

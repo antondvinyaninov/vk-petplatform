@@ -37,3 +37,38 @@ export const syncUserWithBackend = async (user: UserInfo) => {
     return null;
   }
 };
+
+/**
+ * Создает новое объявление в базе данных
+ */
+export const createAd = async (text: string) => {
+  try {
+    const search = window.location.search;
+    
+    // Формируем заголовок из первых 50 символов
+    const title = text.length > 50 ? text.substring(0, 47) + '...' : text;
+
+    const response = await fetch(`${API_URL}/ads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vk-sign': search.slice(1),
+      },
+      body: JSON.stringify({
+        title,
+        description: text,
+        type: 'LOST', // По умолчанию для упрощенной формы
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create ad');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to create ad:', error);
+    throw error;
+  }
+};

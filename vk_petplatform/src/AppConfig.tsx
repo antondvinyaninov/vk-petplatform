@@ -17,11 +17,11 @@ export const AppConfig = () => {
   const vkBridgeInsets = useInsets() || undefined;
   const adaptivity = transformVKBridgeAdaptivity(useAdaptivity());
   const { vk_platform } = parseURLSearchParamsForGetLaunchParams(window.location.search);
-  const platform = vk_platform === 'desktop_web' 
+  const platform = (vk_platform as string) === 'desktop_web' 
     ? 'vkcom' 
-    : vk_platform === 'mobile_android' 
+    : (vk_platform as string) === 'mobile_android' 
       ? 'android' 
-      : vk_platform === 'mobile_ios' 
+      : (vk_platform as string) === 'mobile_ios' 
         ? 'ios' 
         : undefined;
 

@@ -17,11 +17,18 @@ export const AppConfig = () => {
   const vkBridgeInsets = useInsets() || undefined;
   const adaptivity = transformVKBridgeAdaptivity(useAdaptivity());
   const { vk_platform } = parseURLSearchParamsForGetLaunchParams(window.location.search);
+  const platform = vk_platform === 'desktop_web' 
+    ? 'vkcom' 
+    : vk_platform === 'mobile_android' 
+      ? 'android' 
+      : vk_platform === 'mobile_ios' 
+        ? 'ios' 
+        : undefined;
 
   return (
     <ConfigProvider
       colorScheme={vkBridgeAppearance}
-      platform={vk_platform === 'desktop_web' ? 'vkcom' : undefined}
+      platform={platform}
       isWebView={vkBridge.isWebView()}
       hasCustomPanelHeaderAfter={true}
     >

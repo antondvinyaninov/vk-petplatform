@@ -15,9 +15,10 @@ import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
 export interface HomeProps extends NavIdProps {
   fetchedUser?: UserInfo;
+  isAdmin?: boolean;
 }
 
-export const Home: FC<HomeProps> = ({ id, fetchedUser }) => {
+export const Home: FC<HomeProps> = ({ id, fetchedUser, isAdmin }) => {
   const { photo_200, city, first_name, last_name } = { ...fetchedUser };
   const routeNavigator = useRouteNavigator();
 
@@ -29,6 +30,16 @@ export const Home: FC<HomeProps> = ({ id, fetchedUser }) => {
           <Cell before={photo_200 && <Avatar src={photo_200} />} subtitle={city?.title}>
             {`${first_name} ${last_name}`}
           </Cell>
+        </Group>
+      )}
+
+      {isAdmin && (
+        <Group header={<Header size="s">Управление приютом</Header>}>
+          <Box padding="m">
+            <Button stretched size="l" mode="primary" onClick={() => console.log('Settings click')}>
+              Настройки сообщества (Step 5)
+            </Button>
+          </Box>
         </Group>
       )}
 

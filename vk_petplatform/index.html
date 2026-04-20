@@ -9,13 +9,9 @@
     />
     <title>PetPlatform</title>
     <script src="/vk-bridge.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>
-      eruda.init();
-      console.log('🚀 HTML Loaded');
       if (typeof vkBridge !== 'undefined') {
         vkBridge.send('VKWebAppInit');
-        console.log('VK Bridge early init triggered');
       }
     </script>
   </head>

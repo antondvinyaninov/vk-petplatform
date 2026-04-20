@@ -16,32 +16,28 @@ export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
   const routeNavigator = useRouteNavigator();
   const [fetchedUser, setUser] = useState<UserInfo | undefined>();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [popout, setPopout] = useState<ReactNode | null>(<ScreenSpinner />);
 
   useEffect(() => {
-    console.log('🚀 App init: start');
     // Проверка контекста запуска: вне сообщества редиректим на лендинг
     const params = new URLSearchParams(window.location.search);
     const hasGroupId = params.has('vk_group_id');
-    console.log('🚀 Launch params detected:', { 
-      hasGroupId, 
-      vk_group_id: params.get('vk_group_id'),
-      panel: activePanel 
-    });
+    const role = params.get('vk_viewer_group_role');
+    
+    // Админами считаем роли admin, editor и moder
+    setIsAdmin(['admin', 'editor', 'moder'].includes(role || ''));
     
     if (!hasGroupId && activePanel !== DEFAULT_VIEW_PANELS.ONBOARDING) {
-      console.log('🚀 Redirecting to onboarding (not in community)');
       routeNavigator.replace('/onboarding');
     }
 
     async function fetchData() {
       try {
-        console.log('🚀 Fetching user info...');
         const user = await bridge.send('VKWebAppGetUserInfo');
-        console.log('🚀 User info fetched:', user.first_name);
         setUser(user);
       } catch (e) {
-        console.error('❌ Failed to fetch user', e);
+        console.error('Failed to fetch user', e);
       } finally {
         setPopout(null);
       }
@@ -56,7 +52,7 @@ export const App = () => {
           <Suspense fallback={popout || <ScreenSpinner />}>
             <View activePanel={activePanel}>
               <Onboarding id="onboarding" />
-              <Home id="home" fetchedUser={fetchedUser} />
+              <Home id="home" fetchedUser={fetchedUser} isAdmin={isAdmin} />
               <Persik id="persik" />
             </View>
           </Suspense>

@@ -26,6 +26,12 @@ export const transformVKBridgeAdaptivity = ({
         sizeY: type === 'force_mobile_compact' ? SizeType.COMPACT : SizeType.REGULAR,
       };
     default:
-      return {};
+      // По умолчанию вычисляем на основе реального размера окна, чтобы не было прыжков при загрузке
+      return {
+        viewWidth: getViewWidthByViewportWidth(window.innerWidth),
+        viewHeight: getViewHeightByViewportHeight(window.innerHeight),
+        sizeX: window.innerWidth >= 768 ? SizeType.REGULAR : SizeType.COMPACT,
+        sizeY: SizeType.REGULAR,
+      };
   }
 };

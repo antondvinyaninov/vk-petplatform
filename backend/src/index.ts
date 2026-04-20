@@ -19,7 +19,6 @@ const app = express();
 // Порядок важен: compression → id → log → cors → rate → body → auth → routes → errors
 app.use(compression());
 app.use(pinoHttp({ logger }));
-/*
 app.use(
   helmet({
     xFrameOptions: false,
@@ -28,7 +27,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net', 'cdn.jsdelivr.net'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net'],
         'frame-ancestors': ['*', 'https://vk.com', 'https://*.vk.com', 'https://*.vk-portal.net'],
         'style-src': ["'self'", "'unsafe-inline'", 'data:', 'https://fonts.googleapis.com'],
         'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],
@@ -39,7 +38,6 @@ app.use(
     referrerPolicy: { policy: 'no-referrer-when-downgrade' },
   })
 );
-*/
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     const allowed = [

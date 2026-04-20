@@ -14,6 +14,7 @@ export interface VkLaunchParams {
   vk_platform?: string;
   vk_language?: string;
   vk_is_app_user?: number;
+  vk_viewer_group_role?: 'admin' | 'editor' | 'moder' | 'member' | 'none';
 }
 
 // Добавляем vkUser к Request
@@ -63,6 +64,7 @@ export function vkAuth(req: Request, _res: Response, next: NextFunction): void {
       vk_platform: params.vk_platform,
       vk_language: params.vk_language,
       vk_is_app_user: params.vk_is_app_user ? parseInt(params.vk_is_app_user, 10) : undefined,
+      vk_viewer_group_role: params.vk_viewer_group_role as any,
     };
 
     next();

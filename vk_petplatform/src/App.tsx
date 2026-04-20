@@ -30,14 +30,12 @@ export const App = () => {
     <>
       <SplitLayout>
         <SplitCol>
-          <View activePanel={activePanel}>
-            <Suspense fallback={<ScreenSpinner />}>
+          <Suspense fallback={popout || <ScreenSpinner />}>
+            <View activePanel={activePanel}>
               <Home id="home" fetchedUser={fetchedUser} />
-            </Suspense>
-            <Suspense fallback={<ScreenSpinner />}>
               <Persik id="persik" />
-            </Suspense>
-          </View>
+            </View>
+          </Suspense>
         </SplitCol>
       </SplitLayout>
       {popout}

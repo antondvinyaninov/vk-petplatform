@@ -35,11 +35,11 @@ COPY --from=backend-builder /app/backend/prisma ./backend/prisma
 # Копируем собранный фронтенд в папку public бэкенда
 COPY --from=frontend-builder /app/frontend/build ./backend/public
 
-EXPOSE 3001
+EXPOSE 3000
 WORKDIR /app/backend
 
 # Переменные окружения по умолчанию
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV PORT=3000
 
 CMD ["node", "dist/index.js"]

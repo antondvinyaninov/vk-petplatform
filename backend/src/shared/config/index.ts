@@ -13,7 +13,7 @@ function intEnv(name: string, defaultValue: number): number {
 }
 
 export const config = {
-  port: intEnv('PORT', 3001),
+  port: intEnv('PORT', 3000),
   nodeEnv: process.env.NODE_ENV || 'development',
   isDev: process.env.NODE_ENV !== 'production',
 

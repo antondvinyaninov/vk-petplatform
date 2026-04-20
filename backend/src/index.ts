@@ -61,16 +61,25 @@ app.use((_req, res) => {
 app.use(errorHandler);
 
 // ── Start ───────────────────────────────────────────────────
-const server = app.listen(config.port, () => {
-  logger.info({ port: config.port, env: config.nodeEnv }, 'Server started');
-});
+const start = async () => {
+  try {
+    const server = app.listen(config.port, '0.0.0.0', () => {
+      logger.info({ port: config.port, env: config.nodeEnv, host: '0.0.0.0' }, 'Server started');
+    });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  server.close(async () => {
-    await prisma.$disconnect();
-    logger.info('Server closed');
-    process.exit(0);
-  });
-});
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      logger.info('SIGTERM received, shutting down gracefully');
+      server.close(async () => {
+        await prisma.$disconnect();
+        logger.info('Server closed');
+        process.exit(0);
+      });
+    });
+  } catch (err) {
+    logger.error({ err }, 'Failed to start server');
+    process.exit(1);
+  }
+};
+
+start();

@@ -16,17 +16,12 @@ export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
   const routeNavigator = useRouteNavigator();
   const [fetchedUser, setUser] = useState<UserInfo | undefined>();
-  const [isAdmin, setIsAdmin] = useState(false);
   const [popout, setPopout] = useState<ReactNode | null>(null);
 
   useEffect(() => {
     // Проверка контекста запуска: вне сообщества редиректим на лендинг
     const params = new URLSearchParams(window.location.search);
     const hasGroupId = params.has('vk_group_id');
-    const role = params.get('vk_viewer_group_role');
-    
-    // Админами считаем роли admin, editor и moder
-    setIsAdmin(['admin', 'editor', 'moder'].includes(role || ''));
     
     if (!hasGroupId && activePanel !== DEFAULT_VIEW_PANELS.ONBOARDING) {
       routeNavigator.replace('/onboarding');

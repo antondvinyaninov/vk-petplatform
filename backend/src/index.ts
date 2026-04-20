@@ -24,16 +24,33 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com'],
         'frame-ancestors': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net'],
-        'style-src': ["'self'", "'unsafe-inline'", 'data:'],
-        'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net'],
-        'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com'],
+        'style-src': ["'self'", "'unsafe-inline'", 'data:', 'https://fonts.googleapis.com'],
+        'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me'],
+        'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com', '*.vk-portal.net', '*.vk-me.com', '*.vk.me'],
+        'frame-src': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net'],
       },
     },
   })
 );
-app.use(cors({ origin: config.cors.origin, credentials: true }));
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    const allowed = [
+      config.cors.origin,
+      'https://vk.com',
+      'https://m.vk.com',
+      /\.vk-portal\.net$/,
+    ];
+    if (!origin || allowed.some(pattern => typeof pattern === 'string' ? pattern === origin : pattern.test(origin))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Раздача статики фронтенда с отключенным кешированием для отладки

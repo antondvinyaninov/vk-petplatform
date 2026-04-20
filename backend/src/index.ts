@@ -19,6 +19,7 @@ const app = express();
 // Порядок важен: compression → id → log → cors → rate → body → auth → routes → errors
 app.use(compression());
 app.use(pinoHttp({ logger }));
+/*
 app.use(
   helmet({
     xFrameOptions: false,
@@ -38,6 +39,7 @@ app.use(
     referrerPolicy: { policy: 'no-referrer-when-downgrade' },
   })
 );
+*/
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     const allowed = [

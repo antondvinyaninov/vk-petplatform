@@ -40,6 +40,16 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
       }
     }
     fetchAdsForModeration();
+
+    // Слушатель для синхронизации после модерации в модальном окне
+    const handleModeratedEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { adId } = customEvent.detail;
+      setAds(prev => prev.filter(ad => ad.id !== adId));
+    };
+
+    window.addEventListener('adModerated', handleModeratedEvent);
+    return () => window.removeEventListener('adModerated', handleModeratedEvent);
   }, []);
 
   const openApproveModal = (adId: number) => {

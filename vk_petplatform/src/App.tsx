@@ -63,6 +63,8 @@ export const App = () => {
           id="approve_settings" 
           onConfirm={(adId, type, date) => {
             console.log(`Action confirmed for ad ${adId}: ${type} at ${date?.toLocaleString() || 'NOW'}`);
+            // Отправляем глобальное событие для уведомления панелей об обновлении
+            window.dispatchEvent(new CustomEvent('adModerated', { detail: { adId } }));
           }} 
         />
       </Suspense>

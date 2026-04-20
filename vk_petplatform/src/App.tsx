@@ -54,7 +54,7 @@ export const App = () => {
           <Suspense fallback={popout || <ScreenSpinner />}>
             <View activePanel={activePanel}>
               <Onboarding id="onboarding" />
-              <Home id="home" fetchedUser={fetchedUser} />
+              <Home id="home" />
               <Persik id="persik" />
               <Profile id="profile" fetchedUser={fetchedUser} role={role} />
             </View>

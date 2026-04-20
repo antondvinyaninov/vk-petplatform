@@ -9,8 +9,11 @@ const vkBridge = (vkBridgeModule && 'send' in vkBridgeModule)
 
 vkBridge.send('VKWebAppInit');
 
-// Всегда импортируем Eruda для отладки в мобильном VK
-import('./eruda.ts');
+// Проверка версии кода
+alert('PetPlatform: V2 Debug - Check 1');
+
+// Пытаемся загрузить консоль без ожидания
+import('./eruda.ts').catch(err => console.error('Eruda load failed', err));
 
 createRoot(document.getElementById('root')!).render(<AppConfig />);
 

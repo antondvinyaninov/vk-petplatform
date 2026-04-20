@@ -228,29 +228,36 @@ adsRouter.post('/settings/token', vkAuth, async (req, res, next) => {
 
     const groupId = BigInt(vk_group_id);
 
-    // 1. Сначала убеждаемся, что организация существует
-    const organization = await prisma.organizations.upsert({
-      where: { vk_group_id: groupId },
-      update: {},
-      create: {
-        name: `Сообщество ${vk_group_id}`,
-        vk_group_id: groupId,
-      },
+    // 1. Сначала ищем существующие настройки по vk_group_id
+    const existingSettings = await prisma.organization_vk_settings.findUnique({
+      where: { vk_group_id: groupId }
     });
 
-    // 2. Теперь сохраняем или обновляем токен (upsert)
-    const settings = await prisma.organization_vk_settings.upsert({
-      where: { organization_id: organization.id },
-      update: { 
-        access_token,
-        vk_group_id: groupId
-      },
-      create: { 
-        organization_id: organization.id,
-        vk_group_id: groupId,
-        access_token,
-      },
-    });
+    let settings;
+    if (existingSettings) {
+      // Если настройки уже есть, просто обновляем токен
+      settings = await prisma.organization_vk_settings.update({
+        where: { id: existingSettings.id },
+        data: { access_token }
+      });
+    } else {
+      // 2. Если настроек нет — создаем организацию и затем настройки
+      const organization = await prisma.organizations.create({
+        data: {
+          name: `Сообщество ${vk_group_id}`,
+          type: 'SHELTER', // Тип по умолчанию для платформы
+          description: 'Автоматически создана через Мини-приложение',
+        }
+      });
+
+      settings = await prisma.organization_vk_settings.create({
+        data: {
+          organization_id: organization.id,
+          vk_group_id: groupId,
+          access_token,
+        }
+      });
+    }
 
     res.json({
       success: true,

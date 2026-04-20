@@ -1,5 +1,5 @@
 # Этап 1: Сборка фронтенда
-FROM node:20-alpine AS frontend-builder
+FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend
 COPY vk_petplatform/package*.json vk_petplatform/.npmrc ./
 RUN npm install --legacy-peer-deps
@@ -7,8 +7,10 @@ COPY vk_petplatform/ ./
 RUN npm run build
 
 # Этап 2: Сборка бэкенда
-FROM node:20-alpine AS backend-builder
+FROM node:20-slim AS backend-builder
 WORKDIR /app/backend
+# Установка openssl для генерации Prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY backend/package*.json backend/.npmrc ./
 RUN npm install --legacy-peer-deps
 COPY backend/ ./

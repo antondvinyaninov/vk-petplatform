@@ -13,7 +13,7 @@ import { Icon56ArticleOutline } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import { DEFAULT_VIEW_PANELS } from '../routes';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 
 export const MyAds: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();

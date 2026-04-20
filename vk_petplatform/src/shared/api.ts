@@ -1,6 +1,6 @@
 import { UserInfo } from '@vkontakte/vk-bridge';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 
 /**
  * Синхронизирует данные пользователя VK с нашим бэкендом

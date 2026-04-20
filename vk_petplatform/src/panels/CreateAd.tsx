@@ -3,7 +3,7 @@ import {
   Panel,
   PanelHeader,
   PanelHeaderBack,
-  FormLayout,
+  Group,
   FormItem,
   Textarea,
   Button,
@@ -22,7 +22,7 @@ export const CreateAd: FC<NavIdProps> = ({ id }) => {
         Создать объявление
       </PanelHeader>
 
-      <FormLayout>
+      <Group>
         <FormItem 
           top="Текст объявления" 
           status={text.length > 0 ? 'valid' : 'default'}
@@ -49,7 +49,7 @@ export const CreateAd: FC<NavIdProps> = ({ id }) => {
             Опубликовать
           </Button>
         </Div>
-      </FormLayout>
+      </Group>
     </Panel>
   );
 };

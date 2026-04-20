@@ -2,32 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
-    />
-    <title>VK Mini App Booster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+    <title>DEBUG MODE</title>
     <script src="/vk-bridge.min.js"></script>
-    <script>
-      if (typeof vkBridge !== 'undefined') {
-        vkBridge.send('VKWebAppInit');
-        console.log('VK Bridge early init triggered');
-      }
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const perf = performance.getEntriesByType('navigation')[0];
-          if (perf) {
-            const loadTime = perf.loadEventEnd - perf.fetchStart;
-            console.log('%c🚀 PetPlatform Speed: ' + loadTime.toFixed(0) + 'ms', 'background: #0077ff; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;');
-          }
-        }, 0);
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init(); console.log('🚀 DEBUG: Eruda Ready');</script>
   </head>
   <body>
-    <script>console.log('🚀 HTML Entry Point Reached - Body Rendering Started');</script>
-    <div id="root"></div>
+    <div style="padding: 50px; text-align: center; font-family: sans-serif;">
+      <h1>🚀 App Terminal</h1>
+      <p>Если вы видите этот текст, значит соединение установлено!</p>
+      <div id="root"></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

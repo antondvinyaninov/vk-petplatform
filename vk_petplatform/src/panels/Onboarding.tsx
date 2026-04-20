@@ -24,15 +24,17 @@ export const Onboarding: FC<NavIdProps> = ({ id }) => {
       <Group>
         <Placeholder
           icon={<Icon56ServicesOutline />}
-          header="PetPlatform — твой помощник в волонтерстве"
           action={
             <Button size="l" onClick={installToCommunity}>
               Установить в сообщество
             </Button>
           }
         >
-          Управляйте базой животных, находите дом питомцам и делайте добрые дела вместе с нами прямо внутри ВКонтакте. 
-          Наш плагин специально разработан для волонтерских групп и приютов.
+          <Placeholder.Header>PetPlatform — твой помощник в волонтерстве</Placeholder.Header>
+          <Placeholder.Text>
+            Управляйте базой животных, находите дом питомцам и делайте добрые дела вместе с нами прямо внутри ВКонтакте. 
+            Наш плагин специально разработан для волонтерских групп и приютов.
+          </Placeholder.Text>
         </Placeholder>
         <Box padding="m" style={{ color: 'var(--vkui--color_text_secondary)', textAlign: 'center' }}>
           После установки вы сможете вести каталог животных, публиковать объявления и управлять SOS-радаром своего сообщества.

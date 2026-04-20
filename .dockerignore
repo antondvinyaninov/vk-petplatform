@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+build
+dist
+.git
+.DS_Store
+*.md
+.agent
+backend/node_modules
+vk_petplatform/node_modules
+vk_petplatform/build
+backend/dist

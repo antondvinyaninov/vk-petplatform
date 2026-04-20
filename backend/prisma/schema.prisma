@@ -1,0 +1,1188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                                          Int                                   @id @default(autoincrement())
+  name                                        String
+  lastName                                    String?                               @map("last_name")
+  email                                       String                                @unique
+  bio                                         String?
+  phone                                       String?
+  location                                    String?
+  avatar                                      String?
+  cover_photo                                 String?
+  profile_visibility                          String?                               @default("public")
+  show_phone                                  String?                               @default("friends")
+  show_email                                  String?                               @default("friends")
+  allow_messages                              String?                               @default("everyone")
+  show_online                                 String?                               @default("yes")
+  verified                                    Boolean?                              @default(false)
+  verified_at                                 DateTime?                             @db.Timestamp(6)
+  createdAt                                   DateTime?                             @default(now()) @map("created_at") @db.Timestamp(6)
+  last_seen                                   DateTime?                             @db.Timestamp(6)
+  password_hash                               String                                @db.VarChar(255)
+  vk_id                                       Int?                                  @unique
+  vk_access_token                             String?
+  ok_id                                       String?                               @unique @db.VarChar(255)
+  ok_access_token                             String?
+  mailru_id                                   String?                               @unique @db.VarChar(255)
+  mailru_access_token                         String?
+  admin_logs                                  admin_logs[]
+  chat_participants                           chat_participants[]
+  chats                                       chats[]
+  clinic_patients                             clinic_patients[]
+  comments                                    comments[]
+  error_logs                                  error_logs[]
+  favorites                                   favorites[]
+  followers_followers_follower_idTousers      followers[]                           @relation("followers_follower_idTousers")
+  followers_followers_following_idTousers     followers[]                           @relation("followers_following_idTousers")
+  friends_friends_user_id_1Tousers            friends[]                             @relation("friends_user_id_1Tousers")
+  friends_friends_user_id_2Tousers            friends[]                             @relation("friends_user_id_2Tousers")
+  friendships_friendships_friend_idTousers    friendships[]                         @relation("friendships_friend_idTousers")
+  friendships_friendships_user_idTousers      friendships[]                         @relation("friendships_user_idTousers")
+  messages                                    messages[]
+  notifications_notifications_actor_idTousers notifications[]                       @relation("notifications_actor_idTousers")
+  notifications_notifications_user_idTousers  notifications[]                       @relation("notifications_user_idTousers")
+  organization_members                        organization_members[]
+  organization_vk_notification_admins         organization_vk_notification_admins[]
+  organization_vk_settings                    organization_vk_settings[]
+  organizations                               organizations[]
+  password_history                            password_history[]
+  password_resets                             password_resets[]
+  pet_change_log                              pet_change_log[]
+  pet_registrations                           pet_registrations[]
+  pet_treatments                              pet_treatments[]
+  pet_vaccinations                            pet_vaccinations[]
+  pets                                        Pet[]
+  platform_reviews                            platform_reviews[]
+  poll_votes                                  poll_votes[]
+  reports_reports_moderator_idTousers         reports[]                             @relation("reports_moderator_idTousers")
+  reports_reports_reporter_idTousers          reports[]                             @relation("reports_reporter_idTousers")
+  user_activity                               user_activity?
+  user_activity_log                           user_activity_log[]
+  user_activity_logs                          user_activity_logs[]
+  user_roles                                  user_roles[]
+  user_sessions                               user_sessions[]
+  user_stats                                  user_stats[]
+  vk_app_user_settings                        vk_app_user_settings?
+  vk_radar_pins                               vk_radar_pins[]
+  petplatform_ads                             petplatform_ads[]
+
+  @@index([createdAt], map: "idx_users_created_at")
+  @@index([email], map: "idx_users_email")
+  @@index([name, lastName], map: "idx_users_fullname")
+  @@index([last_seen], map: "idx_users_last_seen")
+  @@index([name], map: "idx_users_name")
+  @@index([vk_id], map: "idx_users_vk_id")
+  @@map("users")
+}
+
+model Pet {
+  id                       Int                   @id @default(autoincrement())
+  userId                   Int                   @map("user_id")
+  name                     String
+  species                  String
+  breed                    String?
+  age                      Int?
+  weight                   Decimal?              @db.Decimal(5, 2)
+  color                    String?
+  gender                   String?
+  microchip                String?
+  tag_number               String?
+  sterilization_date       DateTime?             @db.Date
+  createdAt                DateTime?             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt                DateTime?             @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  photo                    String?
+  curator_id               Int?
+  location                 String?
+  relationship             String?               @default("owner") @db.VarChar(20)
+  species_id               Int?
+  breed_id                 Int?
+  birth_date               DateTime?             @db.Date
+  age_type                 String?               @default("exact") @db.VarChar(20)
+  approximate_years        Int?                  @default(0)
+  approximate_months       Int?                  @default(0)
+  description              String?
+  fur                      String?               @db.VarChar(100)
+  ears                     String?               @db.VarChar(100)
+  tail                     String?               @db.VarChar(100)
+  size                     String?               @db.VarChar(20)
+  special_marks            String?
+  marking_date             DateTime?             @db.Date
+  brand_number             String?               @db.VarChar(50)
+  chip_number              String?               @db.VarChar(50)
+  location_type            String?               @default("home") @db.VarChar(50)
+  location_address         String?
+  location_cage            String?               @db.VarChar(100)
+  location_contact         String?               @db.VarChar(255)
+  location_phone           String?               @db.VarChar(50)
+  location_notes           String?
+  health_notes             String?
+  photoUrl                 String?               @map("photo_url")
+  views_count              Int?                  @default(0)
+  media_urls               Json?                 @default("[]")
+  is_sterilized            Boolean?              @default(false)
+  catalog_status           String?               @default("draft") @db.VarChar(50)
+  catalog_data             Json?                 @default("{}")
+  org_id                   Int?
+  org_pet_number           Int?
+  face_photo_url           String?
+  body_photo_url           String?
+  marking_specialist       String?               @db.VarChar(255)
+  marking_org              String?               @db.VarChar(255)
+  sterilization_specialist String?               @db.VarChar(255)
+  sterilization_org        String?               @db.VarChar(255)
+  sterilization_type       String?               @db.VarChar(255)
+  city                     String?               @db.VarChar(255)
+  clinic_appointments      clinic_appointments[]
+  clinic_patients          clinic_patients[]
+  favorites                favorites[]
+  medical_records          medical_records[]
+  org_pet_events           org_pet_events[]
+  pet_change_log           pet_change_log[]
+  pet_medical_records      pet_medical_records[]
+  pet_registrations        pet_registrations[]
+  pet_treatments           pet_treatments[]
+  pet_vaccinations         pet_vaccinations[]
+  users                    User?                 @relation(fields: [curator_id], references: [id], onUpdate: NoAction)
+  organizations            organizations?        @relation(fields: [org_id], references: [id], onUpdate: NoAction)
+  petplatform_ads          petplatform_ads[]
+
+  @@index([curator_id], map: "idx_pets_curator_id")
+  @@index([location_cage], map: "idx_pets_location_cage")
+  @@index([location_type], map: "idx_pets_location_type")
+  @@index([name], map: "idx_pets_name")
+  @@index([org_id], map: "idx_pets_org_id")
+  @@index([species], map: "idx_pets_species")
+  @@index([userId], map: "idx_pets_user_id")
+  @@map("pets")
+}
+
+model admin_logs {
+  id          Int       @id @default(autoincrement())
+  admin_id    Int
+  action_type String    @db.VarChar(100)
+  target_type String?   @db.VarChar(50)
+  target_id   Int?
+  target_name String?   @db.VarChar(255)
+  details     String?
+  ip_address  String?   @db.VarChar(45)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  users       User      @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([action_type], map: "idx_admin_logs_action_type")
+  @@index([admin_id], map: "idx_admin_logs_admin_id")
+  @@index([created_at(sort: Desc)], map: "idx_admin_logs_created_at")
+}
+
+model breeds {
+  id            Int       @id @default(autoincrement())
+  species_id    Int
+  name          String
+  description   String?
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  name_en       String?   @db.VarChar(255)
+  origin        String?   @db.VarChar(255)
+  size          String?   @db.VarChar(50)
+  weight_min    Decimal?  @db.Decimal(5, 2)
+  weight_max    Decimal?  @db.Decimal(5, 2)
+  temperament   String?
+  care_level    String?   @db.VarChar(50)
+  image_url     String?
+  wikipedia_url String?
+  species       species   @relation(fields: [species_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([species_id], map: "idx_breeds_species_id")
+}
+
+model chat_participants {
+  id                   Int       @id @default(autoincrement())
+  chat_id              Int
+  user_id              Int
+  role                 String?   @default("member") @db.VarChar(50)
+  joined_at            DateTime? @default(now()) @db.Timestamp(6)
+  last_read_message_id Int?      @default(0)
+  hidden_until_msg_id  Int?      @default(0)
+  chats                chats     @relation(fields: [chat_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([chat_id, user_id])
+}
+
+/// This model contains an index with non-default null sort order and requires additional setup for migrations. Visit https://pris.ly/d/default-index-null-ordering for more info.
+model chats {
+  id                Int                 @id @default(autoincrement())
+  last_message_id   Int?
+  last_message_at   DateTime?           @db.Timestamp(6)
+  created_at        DateTime?           @default(now()) @db.Timestamp(6)
+  type              String?             @default("direct") @db.VarChar(50)
+  name              String?             @db.VarChar(255)
+  avatar_url        String?             @db.VarChar(1024)
+  creator_id        Int?
+  invite_token      String?             @unique @db.VarChar(64)
+  chat_participants chat_participants[]
+  users             User?               @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
+  messages          messages[]
+
+  @@index([last_message_at(sort: Desc)], map: "idx_chats_last_message")
+}
+
+model clinic_appointments {
+  id               Int           @id @default(autoincrement())
+  clinic_id        Int
+  pet_id           Int
+  appointment_date DateTime      @db.Timestamp(6)
+  notes            String?
+  status           String?       @default("scheduled")
+  created_at       DateTime?     @default(now()) @db.Timestamp(6)
+  organizations    organizations @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pets             Pet           @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([clinic_id], map: "idx_clinic_appointments_clinic_id")
+  @@index([pet_id], map: "idx_clinic_appointments_pet_id")
+}
+
+model clinic_patients {
+  id              Int           @id @default(autoincrement())
+  clinic_id       Int
+  pet_id          Int
+  owner_id        Int
+  medical_history String?
+  created_at      DateTime?     @default(now()) @db.Timestamp(6)
+  organizations   organizations @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           User          @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pets            Pet           @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([clinic_id], map: "idx_clinic_patients_clinic_id")
+  @@index([pet_id], map: "idx_clinic_patients_pet_id")
+}
+
+model comments {
+  id               Int        @id @default(autoincrement())
+  post_id          Int
+  user_id          Int
+  content          String
+  created_at       DateTime?  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime?  @default(now()) @db.Timestamp(6)
+  parent_id        Int?
+  reply_to_user_id Int?
+  attachments      Json?      @default("[]")
+  status           String?    @default("published") @db.VarChar(20)
+  comments         comments?  @relation("commentsTocomments", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  other_comments   comments[] @relation("commentsTocomments")
+  posts            posts      @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users            User?      @relation(fields: [reply_to_user_id], references: [id], onUpdate: NoAction)
+
+  @@index([post_id, created_at], map: "idx_comments_post_created")
+  @@index([post_id], map: "idx_comments_post_id")
+  @@index([user_id], map: "idx_comments_user_id")
+}
+
+model email_verification_codes {
+  id         Int      @id @default(autoincrement())
+  email      String   @db.VarChar(255)
+  code       String   @db.VarChar(10)
+  expires_at DateTime @db.Timestamp(6)
+
+  @@index([email], map: "idx_email_verification_codes_email")
+}
+
+model email_verifications {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token      String    @unique
+  expires_at DateTime  @db.Timestamp(6)
+  verified   Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model error_logs {
+  id            Int       @id @default(autoincrement())
+  service       String    @db.VarChar(100)
+  endpoint      String    @db.VarChar(255)
+  method        String    @db.VarChar(10)
+  error_message String
+  user_id       Int?
+  ip_address    String?   @db.VarChar(45)
+  user_agent    String?
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  users         User?     @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_error_logs_created_at")
+  @@index([service], map: "idx_error_logs_service")
+}
+
+model favorites {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  post_id    Int?
+  pet_id     Int?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  pets       Pet?      @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts      posts?    @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, created_at(sort: Desc)], map: "idx_favorites_user_created")
+}
+
+model followers {
+  follower_id                         Int
+  following_id                        Int
+  created_at                          DateTime? @default(now()) @db.Timestamptz(6)
+  users_followers_follower_idTousers  User      @relation("followers_follower_idTousers", fields: [follower_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_followers_following_idTousers User      @relation("followers_following_idTousers", fields: [following_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([follower_id, following_id])
+  @@index([follower_id], map: "idx_followers_follower_id")
+  @@index([following_id], map: "idx_followers_following_id")
+}
+
+model friends {
+  id                             Int       @id @default(autoincrement())
+  user_id_1                      Int
+  user_id_2                      Int
+  status                         String?   @default("pending")
+  created_at                     DateTime? @default(now()) @db.Timestamp(6)
+  users_friends_user_id_1Tousers User      @relation("friends_user_id_1Tousers", fields: [user_id_1], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_friends_user_id_2Tousers User      @relation("friends_user_id_2Tousers", fields: [user_id_2], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id_1, user_id_2])
+  @@index([user_id_1], map: "idx_friends_user_id_1")
+  @@index([user_id_2], map: "idx_friends_user_id_2")
+}
+
+model friendships {
+  id                                 Int       @id @default(autoincrement())
+  user_id                            Int
+  friend_id                          Int
+  status                             String    @default("pending")
+  created_at                         DateTime? @default(now()) @db.Timestamp(6)
+  updated_at                         DateTime? @default(now()) @db.Timestamp(6)
+  users_friendships_friend_idTousers User      @relation("friendships_friend_idTousers", fields: [friend_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_friendships_user_idTousers   User      @relation("friendships_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, friend_id])
+  @@index([friend_id], map: "idx_friendships_friend_id")
+  @@index([status], map: "idx_friendships_status")
+  @@index([user_id], map: "idx_friendships_user_id")
+}
+
+model goose_db_version {
+  id         Int      @id @default(autoincrement())
+  version_id BigInt
+  is_applied Boolean
+  tstamp     DateTime @default(now()) @db.Timestamp(6)
+}
+
+model likes {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  post_id       Int
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  reaction_type String    @default("like") @db.VarChar(20)
+  posts         posts     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, post_id])
+  @@index([post_id], map: "idx_likes_post_count")
+  @@index([post_id], map: "idx_likes_post_id")
+  @@index([user_id], map: "idx_likes_user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model medical_records {
+  id            Int           @id @default(autoincrement())
+  pet_id        Int
+  clinic_id     Int
+  record_date   DateTime      @db.Timestamp(6)
+  diagnosis     String?
+  treatment     String?
+  notes         String?
+  created_at    DateTime?     @default(now()) @db.Timestamp(6)
+  record_type   String?       @default("examination") @db.VarChar(50)
+  title         String?       @db.VarChar(255)
+  medications   String?
+  cost          Decimal?      @db.Decimal(10, 2)
+  organizations organizations @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pets          Pet           @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([clinic_id], map: "idx_medical_records_clinic_id")
+  @@index([record_date(sort: Desc)], map: "idx_medical_records_date")
+  @@index([pet_id], map: "idx_medical_records_pet_id")
+  @@index([record_type], map: "idx_medical_records_type")
+}
+
+model message_attachments {
+  id         Int       @id @default(autoincrement())
+  message_id Int
+  file_path  String
+  file_type  String
+  file_size  Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  messages   messages  @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([message_id], map: "idx_message_attachments_message_id")
+  @@index([message_id, file_type], map: "idx_message_attachments_type")
+}
+
+model messages {
+  id                  Int                   @id @default(autoincrement())
+  chat_id             Int
+  sender_id           Int
+  content             String
+  created_at          DateTime?             @default(now()) @db.Timestamp(6)
+  pet_id              Int?
+  message_attachments message_attachments[]
+  chats               chats                 @relation(fields: [chat_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users               User                  @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([chat_id, created_at], map: "idx_messages_chat_created")
+  @@index([chat_id], map: "idx_messages_chat_id")
+  @@index([created_at], map: "idx_messages_created_at")
+  @@index([sender_id], map: "idx_messages_sender_id")
+}
+
+model notifications {
+  id                                  Int       @id @default(autoincrement())
+  user_id                             Int
+  type                                String
+  actor_id                            Int
+  entity_type                         String?
+  entity_id                           Int?
+  message                             String
+  is_read                             Boolean?  @default(false)
+  created_at                          DateTime? @default(now()) @db.Timestamp(6)
+  users_notifications_actor_idTousers User      @relation("notifications_actor_idTousers", fields: [actor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_notifications_user_idTousers  User      @relation("notifications_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_notifications_created_at")
+  @@index([is_read], map: "idx_notifications_is_read")
+  @@index([user_id, created_at(sort: Desc)], map: "idx_notifications_user_created")
+  @@index([user_id], map: "idx_notifications_user_id")
+  @@index([user_id, is_read], map: "idx_notifications_user_unread")
+}
+
+model org_pet_events {
+  id          Int       @id @default(autoincrement())
+  org_id      Int
+  pet_id      Int?
+  event_type  String    @db.VarChar(50)
+  title       String    @db.VarChar(255)
+  description String?
+  icon        String?   @default("📌") @db.VarChar(10)
+  color       String?   @default("blue") @db.VarChar(20)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  metadata    Json?     @default("{}")
+  pets        Pet?      @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model organization_members {
+  id              Int           @id @default(autoincrement())
+  organization_id Int
+  user_id         Int
+  role            String?       @default("member")
+  position        String?
+  can_post        Boolean?      @default(false)
+  joined_at       DateTime?     @default(now()) @db.Timestamp(6)
+  org_avatar      String?
+  permissions     Json?         @default("{\"pets\": true, \"finance\": false, \"medical\": true}")
+  is_public       Boolean?      @default(true)
+  organizations   organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           User          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([organization_id, user_id])
+  @@index([organization_id], map: "idx_org_members_org_id")
+  @@index([user_id], map: "idx_org_members_user_id")
+  @@index([user_id, organization_id, role], map: "idx_org_members_user_role")
+}
+
+model organization_vk_notification_admins {
+  id              Int           @id @default(autoincrement())
+  organization_id Int
+  user_id         Int
+  created_at      DateTime?     @default(now()) @db.Timestamp(6)
+  organizations   organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users           User          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([organization_id, user_id])
+  @@index([organization_id], map: "idx_v3_organization_vk_notification_admins_org")
+}
+
+model organization_vk_settings {
+  id                        Int           @id @default(autoincrement())
+  organization_id           Int           @unique
+  vk_group_id               BigInt        @unique
+  access_token              String
+  accept_cross_posts        Boolean       @default(false)
+  accepted_tags             Json          @default("[]")
+  schedule_interval_minutes Int           @default(60)
+  schedule_start_time       String        @default("09:00")
+  schedule_end_time         String        @default("21:00")
+  duty_admin_user_id        Int?
+  city_id                   Int?
+  city_name                 String?
+  region_name               String?
+  lat                       Decimal?      @db.Decimal(10, 8)
+  lng                       Decimal?      @db.Decimal(11, 8)
+  created_at                DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at                DateTime?     @default(now()) @db.Timestamp(6)
+  users                     User?         @relation(fields: [duty_admin_user_id], references: [id], onUpdate: NoAction)
+  organizations             organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([city_id, accept_cross_posts], map: "idx_v3_organization_vk_settings_city_crossposts")
+  @@index([vk_group_id], map: "idx_v3_organization_vk_settings_group")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model organizations {
+  id                                  Int                                   @id @default(autoincrement())
+  name                                String
+  type                                String
+  description                         String?
+  logo                                String?
+  website                             String?
+  phone                               String?
+  email                               String?
+  address                             String?
+  city                                String?
+  region                              String?
+  created_at                          DateTime?                             @default(now()) @db.Timestamp(6)
+  updated_at                          DateTime?                             @default(now()) @db.Timestamp(6)
+  short_name                          String?
+  bio                                 String?
+  cover_photo                         String?
+  address_city                        String?
+  address_region                      String?
+  is_verified                         Boolean?                              @default(false)
+  legal_form                          String?
+  inn                                 String?
+  ogrn                                String?
+  kpp                                 String?
+  registration_date                   DateTime?                             @db.Date
+  address_full                        String?
+  address_postal_code                 String?
+  address_street                      String?
+  address_house                       String?
+  address_office                      String?
+  geo_lat                             Decimal?                              @db.Decimal(10, 8)
+  geo_lon                             Decimal?                              @db.Decimal(11, 8)
+  director_name                       String?
+  director_position                   String?
+  owner_user_id                       Int?
+  status                              String?                               @default("active")
+  is_active                           Boolean?                              @default(true)
+  profile_visibility                  String?                               @default("public")
+  show_phone                          String?                               @default("everyone")
+  show_email                          String?                               @default("everyone")
+  allow_messages                      String?                               @default("everyone")
+  state_status                        String?
+  state_liquidation_date              DateTime?                             @db.Date
+  state_registration_date             DateTime?                             @db.Date
+  capital                             BigInt?
+  employee_count                      Int?
+  okved                               String?
+  okved_type                          String?
+  okveds                              Json?
+  okpo                                String?
+  oktmo                               String?
+  okato                               String?
+  okogu                               String?
+  okfs                                String?
+  okopf                               String?
+  tax_system                          String?
+  finance_income                      BigInt?
+  finance_expense                     BigInt?
+  finance_year                        Int?
+  branch_type                         String?
+  branch_count                        Int?
+  founders                            Json?
+  managers                            Json?
+  predecessors                        Json?
+  successors                          Json?
+  licenses                            Json?
+  emails_json                         Json?
+  phones_json                         Json?
+  parent_organization_id              Int?
+  network_role                        String                                @default("standalone") @db.VarChar(20)
+  vk_link                             String?                               @db.VarChar(255)
+  telegram_link                       String?                               @db.VarChar(255)
+  whatsapp_link                       String?                               @db.VarChar(255)
+  max_link                            String?                               @db.VarChar(255)
+  youtube_link                        String?                               @db.VarChar(255)
+  ok_link                             String?                               @db.VarChar(255)
+  rutube_link                         String?                               @db.VarChar(255)
+  telegram_channel_link               String?                               @db.VarChar(255)
+  max_channel_link                    String?                               @db.VarChar(255)
+  clinic_appointments                 clinic_appointments[]
+  clinic_patients                     clinic_patients[]
+  medical_records                     medical_records[]
+  organization_members                organization_members[]
+  organization_vk_notification_admins organization_vk_notification_admins[]
+  organization_vk_settings            organization_vk_settings?
+  users                               User?                                 @relation(fields: [owner_user_id], references: [id], onUpdate: NoAction)
+  organizations                       organizations?                        @relation("organizationsToorganizations", fields: [parent_organization_id], references: [id], onUpdate: NoAction)
+  other_organizations                 organizations[]                       @relation("organizationsToorganizations")
+  pet_registrations                   pet_registrations[]
+  pets                                Pet[]
+  vk_post_publications                vk_post_publications[]
+  vk_radar_pins                       vk_radar_pins[]
+
+  @@index([branch_type], map: "idx_organizations_branch_type")
+  @@index([city], map: "idx_organizations_city")
+  @@index([founders], map: "idx_organizations_founders_gin", type: Gin)
+  @@index([inn], map: "idx_organizations_inn")
+  @@index([licenses], map: "idx_organizations_licenses_gin", type: Gin)
+  @@index([name], map: "idx_organizations_name")
+  @@index([ogrn], map: "idx_organizations_ogrn")
+  @@index([okpo], map: "idx_organizations_okpo")
+  @@index([okved], map: "idx_organizations_okved")
+  @@index([okveds], map: "idx_organizations_okveds_gin", type: Gin)
+  @@index([owner_user_id], map: "idx_organizations_owner")
+  @@index([state_status], map: "idx_organizations_state_status")
+  @@index([status], map: "idx_organizations_status")
+  @@index([type], map: "idx_organizations_type")
+  @@index([type, city], map: "idx_organizations_type_city")
+}
+
+model password_history {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  password_hash String    @db.VarChar(255)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  users         User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_password_history_user_id")
+}
+
+model password_resets {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token      String    @unique @db.VarChar(64)
+  expires_at DateTime  @db.Timestamp(6)
+  used       Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  users      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([token], map: "idx_password_resets_token")
+  @@index([user_id], map: "idx_password_resets_user_id")
+}
+
+model pet_cards {
+  id          Int       @id @default(autoincrement())
+  breed_id    Int?
+  name        String
+  description String?
+  image_url   String?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pet_change_log {
+  id          Int       @id @default(autoincrement())
+  pet_id      Int
+  user_id     Int
+  change_type String    @db.VarChar(50)
+  field_name  String?   @db.VarChar(100)
+  old_value   String?
+  new_value   String?
+  description String
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  pets        Pet       @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([change_type], map: "idx_pet_change_log_change_type")
+  @@index([created_at(sort: Desc)], map: "idx_pet_change_log_created_at")
+  @@index([pet_id], map: "idx_pet_change_log_pet_id")
+  @@index([user_id], map: "idx_pet_change_log_user_id")
+}
+
+model pet_medical_records {
+  id           Int       @id @default(autoincrement())
+  pet_id       Int
+  date         DateTime  @db.Date
+  record_type  String    @db.VarChar(50)
+  title        String    @db.VarChar(150)
+  description  String?
+  veterinarian String?   @db.VarChar(150)
+  clinic       String?   @db.VarChar(150)
+  diagnosis    String?
+  treatment    String?
+  medications  String?
+  cost         Decimal?  @db.Decimal(10, 2)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  pets         Pet       @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([pet_id], map: "idx_pet_medical_records_pet_id")
+}
+
+model pet_registrations {
+  id                  Int            @id @default(autoincrement())
+  pet_id              Int
+  org_id              Int?
+  registered_at       DateTime       @db.Timestamptz(6)
+  specialist_name     String?        @db.VarChar(150)
+  specialist_position String?        @db.VarChar(150)
+  notes               String?
+  created_by          Int?
+  created_at          DateTime?      @default(now()) @db.Timestamptz(6)
+  chip_number         String?        @db.VarChar(100)
+  tag_number          String?        @db.VarChar(100)
+  brand_number        String?        @db.VarChar(100)
+  users               User?          @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+  organizations       organizations? @relation(fields: [org_id], references: [id], onUpdate: NoAction)
+  pets                Pet            @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([org_id], map: "idx_pet_registrations_org_id")
+  @@index([pet_id], map: "idx_pet_registrations_pet_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pet_treatments {
+  id             Int       @id @default(autoincrement())
+  pet_id         Int
+  date           DateTime  @db.Date
+  treatment_type String    @db.VarChar(50)
+  product_name   String    @db.VarChar(255)
+  next_date      DateTime? @db.Date
+  dosage         String?   @db.VarChar(100)
+  notes          String?
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @default(now()) @db.Timestamp(6)
+  created_by     Int?
+  users          User?     @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pets           Pet       @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([date(sort: Desc)], map: "idx_pet_treatments_date")
+  @@index([next_date], map: "idx_pet_treatments_next_date")
+  @@index([pet_id], map: "idx_pet_treatments_pet_id")
+  @@index([treatment_type], map: "idx_pet_treatments_type")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model pet_vaccinations {
+  id           Int       @id @default(autoincrement())
+  pet_id       Int
+  date         DateTime  @db.Date
+  vaccine_name String    @db.VarChar(255)
+  vaccine_type String    @db.VarChar(50)
+  next_date    DateTime? @db.Date
+  veterinarian String?   @db.VarChar(255)
+  clinic       String?   @db.VarChar(255)
+  notes        String?
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+  created_by   Int?
+  users        User?     @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pets         Pet       @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([date(sort: Desc)], map: "idx_pet_vaccinations_date")
+  @@index([next_date], map: "idx_pet_vaccinations_next_date")
+  @@index([pet_id], map: "idx_pet_vaccinations_pet_id")
+  @@index([vaccine_type], map: "idx_pet_vaccinations_vaccine_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model platform_reviews {
+  id                Int       @id @default(autoincrement())
+  user_id           Int
+  rating            Int
+  liked_text        String?
+  disliked_text     String?
+  improvements_text String?
+  created_at        DateTime? @default(now()) @db.Timestamp(6)
+  users             User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model poll_options {
+  id           Int          @id @default(autoincrement())
+  poll_id      Int
+  option_text  String
+  votes_count  Int          @default(0)
+  option_order Int
+  created_at   DateTime     @default(now()) @db.Timestamp(6)
+  polls        polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  poll_votes   poll_votes[]
+
+  @@index([poll_id], map: "idx_poll_options_poll_id")
+}
+
+model poll_votes {
+  id           Int          @id @default(autoincrement())
+  poll_id      Int
+  option_id    Int
+  user_id      Int
+  created_at   DateTime     @default(now()) @db.Timestamp(6)
+  poll_options poll_options @relation(fields: [option_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  polls        polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users        User         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([poll_id, option_id, user_id])
+  @@index([option_id], map: "idx_poll_votes_option_count")
+  @@index([option_id], map: "idx_poll_votes_option_id")
+  @@index([poll_id], map: "idx_poll_votes_poll_id")
+  @@index([user_id], map: "idx_poll_votes_user_id")
+}
+
+model polls {
+  id                 Int            @id @default(autoincrement())
+  post_id            Int
+  question           String
+  multiple_choice    Boolean        @default(false)
+  allow_vote_changes Boolean        @default(false)
+  expires_at         DateTime?      @db.Timestamp(6)
+  created_at         DateTime       @default(now()) @db.Timestamp(6)
+  is_anonymous       Boolean?       @default(false)
+  poll_options       poll_options[]
+  poll_votes         poll_votes[]
+  posts              posts          @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([expires_at], map: "idx_polls_expires_at")
+  @@index([post_id], map: "idx_polls_post_id")
+}
+
+model post_pets {
+  post_id Int
+  pet_id  Int
+  posts   posts @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([post_id, pet_id])
+  @@index([pet_id], map: "idx_post_pets_pet")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model posts {
+  id                   Int                   @id @default(autoincrement())
+  user_id              Int?
+  content              String?               @default("")
+  media_urls           String?
+  status               String?               @default("published")
+  scheduled_at         DateTime?             @db.Timestamp(6)
+  created_at           DateTime?             @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?             @default(now()) @db.Timestamp(6)
+  author_id            Int
+  author_type          String                @default("user")
+  attached_pets        String?               @default("[]")
+  attachments          String?               @default("[]")
+  tags                 String?               @default("[]")
+  is_deleted           Boolean?              @default(false)
+  likes_count          Int?                  @default(0)
+  comments_count       Int?                  @default(0)
+  location_lat         Decimal?              @db.Decimal(10, 8)
+  location_lon         Decimal?              @db.Decimal(11, 8)
+  location_name        String?               @db.VarChar(255)
+  reply_setting        String?               @default("anyone") @db.VarChar(20)
+  verify_replies       Boolean?              @default(false)
+  comments             comments[]
+  favorites            favorites[]
+  likes                likes[]
+  polls                polls[]
+  post_pets            post_pets[]
+  vk_post_publications vk_post_publications?
+  vk_radar_pins        vk_radar_pins?
+
+  @@index([author_id, author_type], map: "idx_posts_author")
+  @@index([created_at], map: "idx_posts_created_at")
+  @@index([is_deleted], map: "idx_posts_is_deleted")
+  @@index([location_lat, location_lon], map: "idx_posts_location")
+  @@index([status], map: "idx_posts_status")
+  @@index([user_id], map: "idx_posts_user_id")
+}
+
+model refresh_tokens {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token      String    @unique
+  expires_at DateTime  @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model reports {
+  id                                Int       @id @default(autoincrement())
+  reporter_id                       Int
+  target_type                       String    @db.VarChar(50)
+  target_id                         Int
+  reason                            String    @db.VarChar(100)
+  description                       String?
+  status                            String    @default("pending") @db.VarChar(20)
+  moderator_id                      Int?
+  moderator_action                  String?   @db.VarChar(50)
+  moderator_comment                 String?
+  reviewed_at                       DateTime? @db.Timestamp(6)
+  created_at                        DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                        DateTime  @default(now()) @db.Timestamp(6)
+  users_reports_moderator_idTousers User?     @relation("reports_moderator_idTousers", fields: [moderator_id], references: [id], onUpdate: NoAction)
+  users_reports_reporter_idTousers  User      @relation("reports_reporter_idTousers", fields: [reporter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)], map: "idx_reports_created_at")
+  @@index([moderator_id], map: "idx_reports_moderator_id")
+  @@index([reporter_id], map: "idx_reports_reporter_id")
+  @@index([status], map: "idx_reports_status")
+  @@index([target_type, target_id], map: "idx_reports_target")
+}
+
+model schema_migrations {
+  version BigInt  @id
+  dirty   Boolean
+}
+
+model service_health {
+  id            Int       @id @default(autoincrement())
+  service_name  String
+  status        String
+  response_time Int?
+  last_check    DateTime? @default(now()) @db.Timestamp(6)
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model sessions {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token      String    @unique
+  expires_at DateTime  @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model species {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  breeds      breeds[]
+}
+
+model support_message_comments {
+  id               Int               @id @default(autoincrement())
+  message_id       Int?
+  comment          String
+  admin_email      String            @db.VarChar(255)
+  created_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  is_public        Boolean?          @default(false)
+  support_messages support_messages? @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model support_messages {
+  id                       Int                        @id @default(autoincrement())
+  name                     String
+  email                    String
+  topic                    String?
+  message                  String
+  status                   String?                    @default("new")
+  created_at               DateTime?                  @default(now()) @db.Timestamp(6)
+  updated_at               DateTime?                  @default(now()) @db.Timestamp(6)
+  attachment_url           String?
+  admin_notes              String?
+  support_message_comments support_message_comments[]
+}
+
+model user_activity {
+  id        Int       @id @default(autoincrement())
+  user_id   Int       @unique
+  last_seen DateTime? @default(now()) @db.Timestamp(6)
+  users     User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([last_seen(sort: Desc)], map: "idx_user_activity_last_seen_all")
+}
+
+model user_activity_log {
+  id            Int            @id @default(autoincrement())
+  user_id       Int
+  session_id    Int?
+  action_type   String
+  entity_type   String?
+  entity_id     Int?
+  metadata      String?
+  created_at    DateTime?      @default(now()) @db.Timestamp(6)
+  user_sessions user_sessions? @relation(fields: [session_id], references: [id], onUpdate: NoAction)
+  users         User           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([action_type], map: "idx_activity_action_type")
+  @@index([created_at], map: "idx_activity_created_at")
+  @@index([entity_type, entity_id], map: "idx_activity_entity")
+  @@index([session_id], map: "idx_activity_session_id")
+  @@index([user_id], map: "idx_activity_user_id")
+}
+
+model user_activity_logs {
+  id          Int       @id @default(autoincrement())
+  user_id     Int?
+  action_type String    @db.VarChar(100)
+  target_type String?   @db.VarChar(50)
+  target_id   Int?
+  metadata    Json?
+  ip_address  String?   @db.VarChar(45)
+  user_agent  String?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  users       User?     @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([action_type], map: "idx_user_activity_action_type")
+  @@index([created_at(sort: Desc)], map: "idx_user_activity_created_at")
+  @@index([metadata], map: "idx_user_activity_metadata", type: Gin)
+  @@index([user_id], map: "idx_user_activity_user_id")
+}
+
+model user_media {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  file_name     String
+  original_name String
+  file_path     String
+  file_size     Int
+  mime_type     String
+  media_type    String
+  width         Int?
+  height        Int?
+  duration      Int?
+  uploaded_at   DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([media_type], map: "idx_user_media_type")
+  @@index([uploaded_at], map: "idx_user_media_uploaded")
+  @@index([user_id], map: "idx_user_media_user_id")
+  @@index([user_id, media_type, uploaded_at(sort: Desc)], map: "idx_user_media_user_type_uploaded")
+}
+
+model user_roles {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  role       String
+  granted_by Int?
+  granted_at DateTime? @default(now()) @db.Timestamp(6)
+  expires_at DateTime? @db.Timestamp(6)
+  is_active  Boolean?  @default(true)
+  notes      String?
+  users      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, role])
+  @@index([role], map: "idx_user_roles_role")
+  @@index([user_id], map: "idx_user_roles_user_id")
+}
+
+model user_sessions {
+  id                Int                 @id @default(autoincrement())
+  user_id           Int
+  started_at        DateTime?           @default(now()) @db.Timestamp(6)
+  ended_at          DateTime?           @db.Timestamp(6)
+  duration_seconds  Int?
+  pages_viewed      Int?                @default(0)
+  actions_count     Int?                @default(0)
+  device_type       String?
+  browser           String?
+  ip_address        String?
+  user_activity_log user_activity_log[]
+  users             User                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ended_at], map: "idx_user_sessions_ended_at")
+  @@index([started_at], map: "idx_user_sessions_started_at")
+  @@index([user_id], map: "idx_user_sessions_user_id")
+}
+
+model user_stats {
+  id                 Int      @id @default(autoincrement())
+  user_id            Int
+  date               DateTime @db.Date
+  sessions_count     Int?     @default(0)
+  total_time_seconds Int?     @default(0)
+  posts_created      Int?     @default(0)
+  comments_added     Int?     @default(0)
+  likes_given        Int?     @default(0)
+  profile_views      Int?     @default(0)
+  messages_sent      Int?     @default(0)
+  pets_added         Int?     @default(0)
+  users              User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, date])
+  @@index([date], map: "idx_user_stats_date")
+  @@index([user_id], map: "idx_user_stats_user_id")
+}
+
+model vk_app_user_settings {
+  id                   Int       @id @default(autoincrement())
+  user_id              Int       @unique
+  role_label           String?
+  contact_telegram     String?
+  home_city_name       String?
+  home_lat             Decimal?  @db.Decimal(10, 8)
+  home_lng             Decimal?  @db.Decimal(11, 8)
+  preferences          Json      @default("[]")
+  onboarding_progress  Int       @default(0)
+  onboarding_completed Boolean   @default(false)
+  created_at           DateTime? @default(now()) @db.Timestamp(6)
+  updated_at           DateTime? @default(now()) @db.Timestamp(6)
+  contact_email        String?
+  karma_score          Int       @default(0)
+  achievements         Json      @default("[]")
+  users                User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_v3_vk_app_user_settings_user_id")
+}
+
+model vk_post_publications {
+  id                Int           @id @default(autoincrement())
+  post_id           Int           @unique
+  organization_id   Int
+  vk_group_id       BigInt
+  moderation_status String        @default("pending")
+  publish_date      DateTime?     @db.Timestamp(6)
+  vk_post_id        BigInt?
+  chat_link         String?
+  city_id           Int?
+  city_name         String?
+  region_name       String?
+  created_at        DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at        DateTime?     @default(now()) @db.Timestamp(6)
+  organizations     organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts             posts         @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([vk_group_id, moderation_status], map: "idx_v3_vk_post_publications_group_status")
+  @@index([organization_id, moderation_status], map: "idx_v3_vk_post_publications_org_status")
+}
+
+model vk_radar_pins {
+  id              Int            @id @default(autoincrement())
+  user_id         Int?
+  post_id         Int?           @unique
+  organization_id Int?
+  type            String
+  title           String
+  description     String?
+  lat             Decimal        @db.Decimal(10, 8)
+  lng             Decimal        @db.Decimal(11, 8)
+  expires_at      DateTime       @db.Timestamp(6)
+  created_at      DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?      @default(now()) @db.Timestamp(6)
+  organizations   organizations? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  posts           posts?         @relation(fields: [post_id], references: [id], onUpdate: NoAction)
+  users           User?          @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([expires_at], map: "idx_v3_vk_radar_pins_expires")
+  @@index([user_id], map: "idx_v3_vk_radar_pins_user")
+}
+
+model petplatform_ads {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  petId       Int?     @map("pet_id")
+  title       String   @db.VarChar(255)
+  description String
+  type        String   @db.VarChar(50)
+  status      String   @default("ACTIVE") @db.VarChar(50)
+  lat         Decimal? @db.Decimal(10, 8)
+  lng         Decimal? @db.Decimal(11, 8)
+  cityTitle   String?  @map("city_title") @db.VarChar(255)
+  photoUrl    String?  @map("photo_url")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  users       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pets        Pet?     @relation(fields: [petId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_petplatform_ads_user")
+  @@index([petId], map: "idx_petplatform_ads_pet")
+  @@index([status], map: "idx_petplatform_ads_status")
+  @@map("petplatform_ads")
+}

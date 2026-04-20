@@ -18,8 +18,11 @@ RUN npx prisma generate
 RUN npm run build
 
 # Этап 3: Финальный образ
-FROM node:20-alpine
+FROM node:20-slim
 WORKDIR /app
+
+# Установка необходимых библиотек для Prisma
+RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/*
 
 # Копируем скомпилированный бэкенд
 COPY --from=backend-builder /app/backend/dist ./backend/dist
@@ -33,7 +36,7 @@ COPY --from=frontend-builder /app/frontend/build ./backend/public
 EXPOSE 3001
 WORKDIR /app/backend
 
-# Переменные окружения по умолчанию (можно переопределить в Easypanel)
+# Переменные окружения по умолчанию
 ENV NODE_ENV=production
 ENV PORT=3001
 

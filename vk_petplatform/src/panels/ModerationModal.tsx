@@ -12,10 +12,11 @@ import {
   Button,
 } from '@vkontakte/vkui';
 import { useParams, useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
+import { moderateAd } from '../shared/api';
 
 interface ModerationModalProps {
   id: string;
-  onConfirm: (adId: number, pubType: string, date?: Date) => void;
+  onConfirm?: (adId: number, pubType: string, date?: Date) => void;
 }
 
 export const ModerationModal: FC<ModerationModalProps> = ({ id, onConfirm }) => {
@@ -30,10 +31,23 @@ export const ModerationModal: FC<ModerationModalProps> = ({ id, onConfirm }) => 
 
   const closeModal = () => routeNavigator.hideModal();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (params?.id) {
-      onConfirm(Number(params.id), pubType, pubType === 'scheduled' ? scheduledDate : undefined);
-      closeModal();
+      const adId = Number(params.id);
+      try {
+        await moderateAd(adId, 'ACTIVE', pubType === 'scheduled' ? scheduledDate : undefined);
+        
+        if (onConfirm) {
+          onConfirm(adId, pubType, pubType === 'scheduled' ? scheduledDate : undefined);
+        }
+        
+        // Отправляем глобальное событие для уведомления панелей об обновлении
+        window.dispatchEvent(new CustomEvent('adModerated', { detail: { adId } }));
+        
+        closeModal();
+      } catch (error) {
+        console.error('Failed to moderate ad:', error);
+      }
     }
   };
 

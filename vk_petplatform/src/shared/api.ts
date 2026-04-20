@@ -74,12 +74,12 @@ export const createAd = async (text: string) => {
 };
 
 /**
- * Получает список всех активных объявлений
+ * Получает список объявлений с учетом фильтра по статусу
  */
-export const getAllAds = async () => {
+export const getAllAds = async (status: string = 'ACTIVE') => {
   try {
     const search = window.location.search;
-    const response = await fetch(`${API_URL}/ads`, {
+    const response = await fetch(`${API_URL}/ads?status=${status}`, {
       headers: {
         'x-vk-sign': search.slice(1),
       },
@@ -93,6 +93,33 @@ export const getAllAds = async () => {
   } catch (error) {
     console.error('Failed to fetch global ads:', error);
     return [];
+  }
+};
+
+/**
+ * Модерирует объявление (одобрение/отклонение)
+ */
+export const moderateAd = async (id: number, status: 'ACTIVE' | 'REJECTED', scheduledAt?: Date) => {
+  try {
+    const search = window.location.search;
+    const response = await fetch(`${API_URL}/ads/${id}/moderate`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vk-sign': search.slice(1),
+      },
+      body: JSON.stringify({ status, scheduledAt: scheduledAt?.toISOString() }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Moderation failed: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to moderate ad ${id}:`, error);
+    throw error;
   }
 };
 
@@ -116,5 +143,35 @@ export const getAdById = async (id: string | number) => {
   } catch (error) {
     console.error(`Failed to fetch ad ${id}:`, error);
     return null;
+  }
+};
+
+/**
+ * Сохраняет токен доступа сообщества на бэкенде
+ */
+export const saveGroupToken = async (groupId: number, token: string) => {
+  try {
+    const search = window.location.search;
+    const response = await fetch(`${API_URL}/ads/settings/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vk-sign': search.slice(1),
+      },
+      body: JSON.stringify({
+        vk_group_id: groupId,
+        access_token: token,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Failed to save token: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to save group token:', error);
+    throw error;
   }
 };

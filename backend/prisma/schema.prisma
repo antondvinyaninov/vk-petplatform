@@ -1173,7 +1173,7 @@ model petplatform_ads {
   title       String   @db.VarChar(255)
   description String
   type        String   @db.VarChar(50)
-  status      String   @default("ACTIVE") @db.VarChar(50)
+  status      String   @default("PENDING") @db.VarChar(50)
   lat         Decimal? @db.Decimal(10, 8)
   lng         Decimal? @db.Decimal(11, 8)
   cityTitle   String?  @map("city_title") @db.VarChar(255)
@@ -1181,6 +1181,8 @@ model petplatform_ads {
   vkGroupId   BigInt?  @map("vk_group_id")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  scheduledAt DateTime? @map("scheduled_at") @db.Timestamp(6)
+  vkPostId    BigInt?  @map("vk_post_id")
 
   users       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   pets        Pet?     @relation(fields: [petId], references: [id], onDelete: SetNull, onUpdate: NoAction)

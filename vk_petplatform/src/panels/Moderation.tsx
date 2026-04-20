@@ -2,9 +2,8 @@ import { FC, useEffect, useState } from 'react';
 import {
   Panel,
   PanelHeader,
-  PanelHeaderBack,
-  Group,
   Header,
+  Group,
   CardGrid,
   ContentCard,
   PanelSpinner,
@@ -15,23 +14,54 @@ import {
   Div,
 } from '@vkontakte/vkui';
 import { 
-  Icon56CheckShieldOutline, 
+  Icon56NewsfeedOutline,
+  Icon56CheckShieldOutline,
   Icon24CheckCircleOutline, 
   Icon24CancelOutline 
 } from '@vkontakte/icons';
+import bridge from '@vkontakte/vk-bridge';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
-import { getAllAds } from '../shared/api';
+import { getAllAds, moderateAd, saveGroupToken } from '../shared/api';
 import { DEFAULT_VIEW_PANELS } from '../routes';
 
 export const Moderation: FC<NavIdProps> = ({ id }) => {
-  const routeNavigator = useRouteNavigator();
   const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isGroupLinked, setIsGroupLinked] = useState(false);
+  const routeNavigator = useRouteNavigator();
+
+  const handleConnectGroup = async () => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const groupId = Number(urlParams.get('vk_group_id'));
+      const appId = 54490430;
+
+      if (!groupId) {
+        console.error('Приложение запущено не в сообществе');
+        return;
+      }
+
+      // Используем приведение к any для обхода конфликтов типов в разных версиях моста
+      const data = await bridge.send('VKWebAppGetGroupToken' as any, {
+        app_id: appId,
+        group_id: groupId,
+        scope: 'manage,wall,photos',
+      }) as any;
+
+      if (data && data.access_token) {
+        await saveGroupToken(groupId, data.access_token);
+        setIsGroupLinked(true);
+        console.log('Group successfully linked!');
+      }
+    } catch (error) {
+      console.error('Failed to get group token:', error);
+    }
+  };
 
   useEffect(() => {
     async function fetchAdsForModeration() {
       try {
-        const data = await getAllAds();
+        const data = await getAllAds('PENDING');
         setAds(data);
       } catch (error) {
         console.error('Failed to fetch ads for moderation:', error);
@@ -40,33 +70,42 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
       }
     }
     fetchAdsForModeration();
-
-    // Слушатель для синхронизации после модерации в модальном окне
-    const handleModeratedEvent = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const { adId } = customEvent.detail;
-      setAds(prev => prev.filter(ad => ad.id !== adId));
-    };
-
-    window.addEventListener('adModerated', handleModeratedEvent);
-    return () => window.removeEventListener('adModerated', handleModeratedEvent);
   }, []);
 
-  const openApproveModal = (adId: number) => {
-    // Открываем модальное окно через push, чтобы передать ID в URL
+  const handleApprove = (adId: number) => {
     routeNavigator.push(`/${DEFAULT_VIEW_PANELS.MODERATION}/approve_settings/${adId}`);
   };
 
-  const handleReject = (adId: number) => {
-    console.log(`Ad ${adId} rejected`);
-    setAds(prev => prev.filter(a => a.id !== adId));
+  const handleReject = async (adId: number) => {
+    try {
+      await moderateAd(adId, 'REJECTED');
+      setAds(prevAds => prevAds.filter(ad => ad.id !== adId));
+    } catch (error) {
+      console.error('Failed to reject ad:', error);
+    }
   };
 
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={() => routeNavigator.back()} />}>
-        Модерация
-      </PanelHeader>
+      <PanelHeader>Модерация</PanelHeader>
+
+      {!isGroupLinked && (
+        <Group header={<Header>Настройка публикации</Header>}>
+          <div style={{ padding: '0 16px 16px' }}>
+            <Placeholder
+              icon={<Icon56NewsfeedOutline />}
+              title="Подключите сообщество"
+              action={
+                <Button size="m" onClick={handleConnectGroup}>
+                  Подключить стену сообщества
+                </Button>
+              }
+            >
+              Чтобы приложение могло автоматически публиковать одобренные объявления на стене, нужно выдать разрешение.
+            </Placeholder>
+          </div>
+        </Group>
+      )}
 
       <Group header={<Header>Предложенные объявления</Header>}>
         {loading ? (
@@ -97,7 +136,7 @@ export const Moderation: FC<NavIdProps> = ({ id }) => {
                         mode="primary" 
                         appearance="positive"
                         before={<Icon24CheckCircleOutline width={16} height={16} />}
-                        onClick={() => openApproveModal(ad.id)}
+                        onClick={() => handleApprove(ad.id)}
                         stretched
                       >
                         Одобрить

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { vkAuth } from '../../shared/middleware/vkAuth';
 import { prisma } from '../../shared/db';
 import { NotFoundError, ValidationError } from '../../shared/errors';
+import { VKService } from '../../shared/vk/vk.service';
 
 export const adsRouter = Router();
 
@@ -22,9 +23,9 @@ const createAdSchema = z.object({
 adsRouter.get('/', vkAuth, async (req, res, next) => {
   try {
     const vkGroupId = req.vkUser.vk_group_id;
+    const status = (req.query.status as string) || 'ACTIVE';
     
-    // Если мы в контексте группы — фильтруем по ней. Если нет — показываем все активные.
-    const whereClause: any = { status: 'ACTIVE' };
+    const whereClause: any = { status };
     if (vkGroupId) {
       whereClause.vkGroupId = vkGroupId;
     }
@@ -155,6 +156,105 @@ adsRouter.get('/:id', vkAuth, async (req, res, next) => {
         ...ad.pets,
         vkGroupId: (ad.pets as any).vkGroupId?.toString(),
       } : null,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/ads/:id/moderate — Модерация объявления
+adsRouter.patch('/:id/moderate', vkAuth, async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id as string, 10);
+    const { status, scheduledAt } = req.body;
+
+    const ad = await prisma.petplatform_ads.findUnique({
+      where: { id },
+    });
+
+    if (!ad) throw new NotFoundError('Ad', id);
+
+    // Обновляем статус в БД
+    const updatedAd = await prisma.petplatform_ads.update({
+      where: { id },
+      data: { 
+        status, 
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null 
+      },
+    });
+
+    // Если одобрено и есть привязка к группе ВК — публикуем пост
+    let vkPostId = null;
+    if (status === 'ACTIVE' && ad.vkGroupId) {
+      // Ищем токен сообщества
+      const settings = await prisma.organization_vk_settings.findUnique({
+        where: { vk_group_id: ad.vkGroupId },
+      });
+
+      if (settings?.access_token) {
+        try {
+          const postId = await VKService.publishToCommunityWall(updatedAd, settings.access_token);
+          vkPostId = postId;
+          
+          // Сохраняем ID поста в БД (через BigInt для безопасности)
+          await prisma.petplatform_ads.update({
+            where: { id },
+            data: { vkPostId: BigInt(postId) },
+          });
+        } catch (postError: any) {
+          console.error('[VK Posting Failed]', postError.message);
+        }
+      }
+    }
+
+    res.json({
+      ...updatedAd,
+      vkGroupId: (updatedAd as any).vkGroupId?.toString(),
+      vkPostId: vkPostId?.toString(),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/ads/settings/token — Сохранение токена сообщества
+adsRouter.post('/settings/token', vkAuth, async (req, res, next) => {
+  try {
+    const { vk_group_id, access_token } = req.body;
+    
+    if (!vk_group_id || !access_token) {
+      throw new ValidationError('Missing group id or token');
+    }
+
+    const groupId = BigInt(vk_group_id);
+
+    // 1. Сначала убеждаемся, что организация существует
+    const organization = await prisma.organizations.upsert({
+      where: { vk_group_id: groupId },
+      update: {},
+      create: {
+        name: `Сообщество ${vk_group_id}`,
+        vk_group_id: groupId,
+      },
+    });
+
+    // 2. Теперь сохраняем или обновляем токен (upsert)
+    const settings = await prisma.organization_vk_settings.upsert({
+      where: { organization_id: organization.id },
+      update: { 
+        access_token,
+        vk_group_id: groupId
+      },
+      create: { 
+        organization_id: organization.id,
+        vk_group_id: groupId,
+        access_token,
+      },
+    });
+
+    res.json({
+      success: true,
+      vk_group_id: settings.vk_group_id.toString(),
     });
   } catch (err) {
     next(err);

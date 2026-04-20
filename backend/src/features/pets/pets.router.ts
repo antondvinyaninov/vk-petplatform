@@ -16,17 +16,35 @@ const createPetSchema = z.object({
   photoUrl: z.string().url().optional(),
 });
 
-// GET /api/pets — список питомцев текущего пользователя
+// GET /api/pets — список питомцев (в контексте сообщества или личные)
 petsRouter.get('/', vkAuth, async (req, res, next) => {
   try {
-    const user = await prisma.user.findUnique({ where: { vk_id: Number(req.vkUser.vk_user_id) } });
-    if (!user) return res.json([]);
+    const vkGroupId = req.vkUser.vk_group_id;
+    
+    let whereClause: any = {};
+    
+    if (vkGroupId) {
+      // Режим сообщества: показываем только питомцев этой группы
+      whereClause = { vkGroupId };
+    } else {
+      // Личный режим: показываем только питомцев пользователя
+      const user = await prisma.user.findUnique({ where: { vk_id: Number(req.vkUser.vk_user_id) } });
+      if (!user) return res.json([]);
+      whereClause = { userId: user.id, vkGroupId: null };
+    }
 
     const pets = await prisma.pet.findMany({
-      where: { userId: user.id },
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
     });
-    res.json(pets);
+
+    // Сериализация BigInt для JSON
+    const serializedPets = pets.map(pet => ({
+      ...pet,
+      vkGroupId: pet.vkGroupId?.toString(),
+    }));
+
+    res.json(serializedPets);
   } catch (err) {
     next(err);
   }
@@ -52,9 +70,17 @@ petsRouter.post('/', vkAuth, async (req, res, next) => {
     }
 
     const pet = await prisma.pet.create({
-      data: { ...parsed.data, userId: user.id },
+      data: { 
+        ...parsed.data, 
+        userId: user.id,
+        vkGroupId: req.vkUser.vk_group_id, // Привязываем к группе, если она есть
+      },
     });
-    res.status(201).json(pet);
+
+    res.status(201).json({
+      ...pet,
+      vkGroupId: pet.vkGroupId?.toString(),
+    });
   } catch (err) {
     next(err);
   }

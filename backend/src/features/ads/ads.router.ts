@@ -19,15 +19,30 @@ const createAdSchema = z.object({
 });
 
 // GET /api/ads — Лента объявлений
-adsRouter.get('/', vkAuth, async (_req, res, next) => {
+adsRouter.get('/', vkAuth, async (req, res, next) => {
   try {
+    const vkGroupId = req.vkUser.vk_group_id;
+    
+    // Если мы в контексте группы — фильтруем по ней. Если нет — показываем все активные.
+    const whereClause: any = { status: 'ACTIVE' };
+    if (vkGroupId) {
+      whereClause.vkGroupId = vkGroupId;
+    }
+
     const ads = await prisma.petplatform_ads.findMany({
-      where: { status: 'ACTIVE' },
+      where: whereClause,
       include: { pets: true, users: { select: { name: true, lastName: true, avatar: true } } },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
-    res.json(ads);
+
+    // Сериализация BigInt
+    const serializedAds = ads.map(ad => ({
+      ...ad,
+      vkGroupId: ad.vkGroupId?.toString(),
+    }));
+
+    res.json(serializedAds);
   } catch (err) {
     next(err);
   }
@@ -61,9 +76,17 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
     }
 
     const ad = await prisma.petplatform_ads.create({
-      data: { ...parsed.data, userId: user.id },
+      data: { 
+        ...parsed.data, 
+        userId: user.id,
+        vkGroupId: req.vkUser.vk_group_id, // Привязываем к группе
+      },
     });
-    res.status(201).json(ad);
+
+    res.status(201).json({
+      ...ad,
+      vkGroupId: ad.vkGroupId?.toString(),
+    });
   } catch (err) {
     next(err);
   }

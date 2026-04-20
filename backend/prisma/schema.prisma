@@ -81,6 +81,7 @@ model User {
   @@index([last_seen], map: "idx_users_last_seen")
   @@index([name], map: "idx_users_name")
   @@index([vk_id], map: "idx_users_vk_id")
+  @@index([vkGroupId], map: "idx_pets_vk_group_id")
   @@map("users")
 }
 
@@ -132,6 +133,7 @@ model Pet {
   catalog_status           String?               @default("draft") @db.VarChar(50)
   catalog_data             Json?                 @default("{}")
   org_id                   Int?
+  vkGroupId                BigInt?               @map("vk_group_id")
   org_pet_number           Int?
   face_photo_url           String?
   body_photo_url           String?
@@ -1176,6 +1178,7 @@ model petplatform_ads {
   lng         Decimal? @db.Decimal(11, 8)
   cityTitle   String?  @map("city_title") @db.VarChar(255)
   photoUrl    String?  @map("photo_url")
+  vkGroupId   BigInt?  @map("vk_group_id")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
@@ -1185,5 +1188,6 @@ model petplatform_ads {
   @@index([userId], map: "idx_petplatform_ads_user")
   @@index([petId], map: "idx_petplatform_ads_pet")
   @@index([status], map: "idx_petplatform_ads_status")
+  @@index([vkGroupId], map: "idx_petplatform_ads_vk_group_id")
   @@map("petplatform_ads")
 }

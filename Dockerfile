@@ -42,4 +42,4 @@ WORKDIR /app/backend
 ENV NODE_ENV=production
 ENV PORT=3000
 
-CMD ["node", "dist/index.js"]
+CMD npx prisma db push && node dist/index.js

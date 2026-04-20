@@ -24,6 +24,7 @@ export const config = {
   vk: {
     appSecret: requiredEnv('VK_APP_SECRET'),
     appId: intEnv('VK_APP_ID', 0),
+    serviceKey: process.env.VK_SERVICE_KEY, // Сервисный ключ для виджетов
   },
 
   cors: {

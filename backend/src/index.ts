@@ -21,17 +21,19 @@ app.use(compression());
 app.use(pinoHttp({ logger }));
 app.use(
   helmet({
+    xFrameOptions: false, // Отключаем, чтобы не конфликтовало с CSP frame-ancestors
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net'],
-        'frame-ancestors': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net', 'vk.me', '*.vk.me', 'https://*.vk-portal.net'],
+        'frame-ancestors': ['*'], // ЭКСТРЕМАЛЬНО: Разрешаем встраивание отовсюду для теста
         'style-src': ["'self'", "'unsafe-inline'", 'data:', 'https://fonts.googleapis.com'],
         'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],
         'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com', '*.vk-portal.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],
         'frame-src': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net', 'vk.me', '*.vk.me'],
       },
     },
+    referrerPolicy: { policy: 'no-referrer-when-downgrade' },
   })
 );
 const corsOptions: cors.CorsOptions = {

@@ -14,6 +14,15 @@
         vkBridge.send('VKWebAppInit');
         console.log('VK Bridge early init triggered');
       }
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const perf = performance.getEntriesByType('navigation')[0];
+          if (perf) {
+            const loadTime = perf.loadEventEnd - perf.fetchStart;
+            console.log('%c🚀 PetPlatform Speed: ' + loadTime.toFixed(0) + 'ms', 'background: #0077ff; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;');
+          }
+        }, 0);
+      });
     </script>
   </head>
   <body>

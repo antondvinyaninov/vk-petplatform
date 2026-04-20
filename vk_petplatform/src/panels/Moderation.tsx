@@ -19,10 +19,14 @@ import {
   Icon24CheckCircleOutline, 
   Icon24CancelOutline 
 } from '@vkontakte/icons';
-import bridge from '@vkontakte/vk-bridge';
+import bridgeModule from '@vkontakte/vk-bridge';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import { getAllAds, moderateAd, saveGroupToken } from '../shared/api';
 import { DEFAULT_VIEW_PANELS } from '../routes';
+
+const bridge = (bridgeModule && 'send' in bridgeModule) 
+  ? bridgeModule 
+  : (bridgeModule as any).default;
 
 export const Moderation: FC<NavIdProps> = ({ id }) => {
   const [ads, setAds] = useState<any[]>([]);

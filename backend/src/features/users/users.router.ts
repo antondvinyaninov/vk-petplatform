@@ -15,7 +15,7 @@ usersRouter.get('/me', vkAuth, async (req, res, next) => {
 
     // Умный Upsert: создаем или обновляем
     const user = await prisma.user.upsert({
-      where: { vk_id: vkId },
+      where: { vk_id: vkId as any },
       update: {
         last_seen: new Date(),
         // Обновляем только если данные пришли

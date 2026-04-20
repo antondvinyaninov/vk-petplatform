@@ -42,7 +42,7 @@ adsRouter.get('/', vkAuth, async (req, res, next) => {
       vkGroupId: ad.vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
-        vkGroupId: ad.pets.vkGroupId?.toString(),
+        vkGroupId: (ad.pets as any).vkGroupId?.toString(),
       } : null,
     }));
 
@@ -58,11 +58,11 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
     const parsed = createAdSchema.safeParse(req.body);
     if (!parsed.success) throw new ValidationError(parsed.error.message);
 
-    let user = await prisma.user.findUnique({ where: { vk_id: req.vkUser.vk_user_id } });
+    let user = await prisma.user.findUnique({ where: { vk_id: req.vkUser.vk_user_id as any } });
     if (!user) {
       user = await prisma.user.create({
         data: { 
-          vk_id: req.vkUser.vk_user_id, 
+          vk_id: req.vkUser.vk_user_id as any, 
           name: 'Пользователь VK', 
           lastName: '',
           email: `vk_${req.vkUser.vk_user_id}@vk.mini.app`,
@@ -97,7 +97,7 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
       vkGroupId: adWithPet?.vkGroupId?.toString(),
       pets: adWithPet?.pets ? {
         ...adWithPet.pets,
-        vkGroupId: adWithPet.pets.vkGroupId?.toString(),
+        vkGroupId: (adWithPet.pets as any).vkGroupId?.toString(),
       } : null,
     });
   } catch (err) {
@@ -127,7 +127,7 @@ adsRouter.get('/my', vkAuth, async (req, res, next) => {
       vkGroupId: ad.vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
-        vkGroupId: ad.pets.vkGroupId?.toString(),
+        vkGroupId: (ad.pets as any).vkGroupId?.toString(),
       } : null,
     }));
 
@@ -153,7 +153,7 @@ adsRouter.get('/:id', vkAuth, async (req, res, next) => {
       vkGroupId: ad.vkGroupId?.toString(),
       pets: ad.pets ? {
         ...ad.pets,
-        vkGroupId: ad.pets.vkGroupId?.toString(),
+        vkGroupId: (ad.pets as any).vkGroupId?.toString(),
       } : null,
     });
   } catch (err) {

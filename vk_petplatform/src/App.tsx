@@ -19,20 +19,29 @@ export const App = () => {
   const [popout, setPopout] = useState<ReactNode | null>(<ScreenSpinner />);
 
   useEffect(() => {
+    console.log('🚀 App init: start');
     // Проверка контекста запуска: вне сообщества редиректим на лендинг
     const params = new URLSearchParams(window.location.search);
     const hasGroupId = params.has('vk_group_id');
+    console.log('🚀 Launch params detected:', { 
+      hasGroupId, 
+      vk_group_id: params.get('vk_group_id'),
+      panel: activePanel 
+    });
     
     if (!hasGroupId && activePanel !== DEFAULT_VIEW_PANELS.ONBOARDING) {
+      console.log('🚀 Redirecting to onboarding (not in community)');
       routeNavigator.replace('/onboarding');
     }
 
     async function fetchData() {
       try {
+        console.log('🚀 Fetching user info...');
         const user = await bridge.send('VKWebAppGetUserInfo');
+        console.log('🚀 User info fetched:', user.first_name);
         setUser(user);
       } catch (e) {
-        console.error('Failed to fetch user', e);
+        console.error('❌ Failed to fetch user', e);
       } finally {
         setPopout(null);
       }

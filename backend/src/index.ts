@@ -24,12 +24,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com'],
-        'frame-ancestors': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'data:', 'https://unpkg.com', 'vk.com', '*.vk.com', '*.mail.ru', '*.vk-portal.net'],
+        'frame-ancestors': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net', 'vk.me', '*.vk.me', 'https://*.vk-portal.net'],
         'style-src': ["'self'", "'unsafe-inline'", 'data:', 'https://fonts.googleapis.com'],
-        'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me'],
-        'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com', '*.vk-portal.net', '*.vk-me.com', '*.vk.me'],
-        'frame-src': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net'],
+        'img-src': ["'self'", 'data:', 'https:', 'vk.com', '*.vk.com', '*.vk-cdn.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],
+        'connect-src': ["'self'", 'https:', 'wss:', 'vk.com', '*.vk.com', '*.vk-portal.net', '*.vk-me.com', '*.vk.me', '*.mail.ru'],
+        'frame-src': ["'self'", 'vk.com', '*.vk.com', 'm.vk.com', '*.vk-portal.net', 'vk.me', '*.vk.me'],
       },
     },
   })
@@ -41,6 +41,8 @@ const corsOptions: cors.CorsOptions = {
       'https://vk.com',
       'https://m.vk.com',
       /\.vk-portal\.net$/,
+      /\.vk-me\.com$/,
+      /\.vk\.me$/,
     ];
     if (!origin || allowed.some(pattern => typeof pattern === 'string' ? pattern === origin : pattern.test(origin))) {
       callback(null, true);

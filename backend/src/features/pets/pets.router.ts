@@ -41,7 +41,7 @@ petsRouter.get('/', vkAuth, async (req, res, next) => {
     // Сериализация BigInt для JSON
     const serializedPets = pets.map(pet => ({
       ...pet,
-      vkGroupId: pet.vkGroupId?.toString(),
+      vkGroupId: (pet as any).vkGroupId?.toString(),
     }));
 
     res.json(serializedPets);
@@ -79,7 +79,7 @@ petsRouter.post('/', vkAuth, async (req, res, next) => {
 
     res.status(201).json({
       ...pet,
-      vkGroupId: pet.vkGroupId?.toString(),
+      vkGroupId: (pet as any).vkGroupId?.toString(),
     });
   } catch (err) {
     next(err);

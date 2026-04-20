@@ -39,7 +39,7 @@ adsRouter.get('/', vkAuth, async (req, res, next) => {
     // Сериализация BigInt
     const serializedAds = ads.map(ad => ({
       ...ad,
-      vkGroupId: ad.vkGroupId?.toString(),
+      vkGroupId: (ad as any).vkGroupId?.toString(),
     }));
 
     res.json(serializedAds);
@@ -85,7 +85,7 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
 
     res.status(201).json({
       ...ad,
-      vkGroupId: ad.vkGroupId?.toString(),
+      vkGroupId: (ad as any).vkGroupId?.toString(),
     });
   } catch (err) {
     next(err);

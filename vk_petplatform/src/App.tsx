@@ -13,6 +13,7 @@ const Home = lazy(() => import('./panels/Home').then(m => ({ default: m.Home }))
 const Persik = lazy(() => import('./panels/Persik').then(m => ({ default: m.Persik })));
 const Onboarding = lazy(() => import('./panels/Onboarding').then(m => ({ default: m.Onboarding })));
 const Profile = lazy(() => import('./panels/Profile').then(m => ({ default: m.Profile })));
+const MyAds = lazy(() => import('./panels/MyAds').then(m => ({ default: m.MyAds })));
 
 export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
@@ -61,6 +62,7 @@ export const App = () => {
               <Home id="home" />
               <Persik id="persik" />
               <Profile id="profile" fetchedUser={fetchedUser} role={role} />
+              <MyAds id="my_ads" />
             </View>
           </Suspense>
         </SplitCol>

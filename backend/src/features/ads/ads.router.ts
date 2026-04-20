@@ -92,6 +92,34 @@ adsRouter.post('/', vkAuth, async (req, res, next) => {
   }
 });
 
+// GET /api/ads/my — Мои объявления
+adsRouter.get('/my', vkAuth, async (req, res, next) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { vk_id: Number(req.vkUser.vk_user_id) },
+    });
+
+    if (!user) {
+      return res.json([]);
+    }
+
+    const ads = await prisma.petplatform_ads.findMany({
+      where: { userId: user.id },
+      include: { pets: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const serializedAds = ads.map(ad => ({
+      ...ad,
+      vkGroupId: (ad as any).vkGroupId?.toString(),
+    }));
+
+    res.json(serializedAds);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/ads/:id — Детальная страница объявления
 adsRouter.get('/:id', vkAuth, async (req, res, next) => {
   try {

@@ -72,7 +72,10 @@ export const Profile: FC<ProfileProps> = ({ id, fetchedUser, role }) => {
 
       <Group header={<Header>Меню пользователя</Header>}>
         <List>
-          <SimpleCell before={<Icon28ListOutline />} onClick={() => console.log('My Ads')}>
+          <SimpleCell 
+            before={<Icon28ListOutline />} 
+            onClick={() => routeNavigator.push(`/${DEFAULT_VIEW_PANELS.MY_ADS}`)}
+          >
             Мои объявления
           </SimpleCell>
           <SimpleCell before={<Icon28FavoriteOutline />} onClick={() => console.log('Favorites')}>
